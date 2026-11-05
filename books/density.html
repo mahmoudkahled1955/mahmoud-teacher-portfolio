@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Density – Interactive E-Book</title>
+<style>
+:root{--bg:#f3efe4;--card:#fffdf6;--ink:#17233b;--mut:#5d6a82;--a:#0b6bff;--b:#e8590c;--g:#0a9a6c;--line:#cfc8b4;--grid:#0b6bff14;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1226;--card:#101b36;--ink:#e8f0ff;--mut:#8fa3c7;--a:#4dd4ff;--b:#ffb43b;--g:#4ff0b0;--line:#25365e;--grid:#4dd4ff12;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a1226;--card:#101b36;--ink:#e8f0ff;--mut:#8fa3c7;--a:#4dd4ff;--b:#ffb43b;--g:#4ff0b0;--line:#25365e;--grid:#4dd4ff12;color-scheme:dark}
+html{scroll-behavior:smooth;scroll-padding-top:60px}
+body{margin:0;color:var(--ink);font:17px/1.65 "Trebuchet MS",system-ui,sans-serif;background:var(--bg) linear-gradient(var(--grid) 1px,transparent 1px) 0 0/32px 32px,linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/32px 32px}
+#prog{position:fixed;top:0;left:0;height:4px;width:0;z-index:20;background:linear-gradient(90deg,var(--a),var(--b))}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;display:flex;gap:6px;overflow-x:auto;padding:9px 12px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav a{white-space:nowrap;padding:5px 12px;border:1px solid var(--line);border-radius:6px;color:var(--mut);text-decoration:none;font:600 13px ui-monospace,monospace}nav a:hover,nav a.on{background:var(--a);color:var(--bg);border-color:var(--a)}
+header{padding:60px 22px 40px;text-align:center}header h1{margin:0;font:900 clamp(48px,12vw,110px)/1 Georgia,serif;letter-spacing:-.03em}header h1 span{color:var(--b)}header p{color:var(--mut);font-family:ui-monospace,monospace}
+.hero{display:flex;justify-content:center;gap:40px;margin:24px 0}.cube{width:90px;height:90px;border-radius:10px;display:grid;place-items:center;font:800 15px ui-monospace,monospace;color:#fff;box-shadow:0 14px 0 #0003;animation:bob 2.4s ease-in-out infinite alternate}@keyframes bob{to{transform:translateY(-22px) rotate(6deg)}}
+main{max-width:900px;margin:auto;padding:0 16px 80px}
+section{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--a);border-radius:6px 20px 20px 6px;padding:24px;margin:20px 0;box-shadow:6px 6px 0 var(--grid),0 10px 30px #0003;opacity:0;transform:translateY(30px);transition:.7s}section.in{opacity:1;transform:none}
+h2{margin:0 0 8px;font:800 28px Georgia,serif}h2 i{font:700 12px ui-monospace,monospace;color:var(--b);letter-spacing:.2em;display:block;font-style:normal}
+.eq{font:700 20px ui-monospace,monospace;color:var(--a);background:color-mix(in srgb,var(--a) 10%,transparent);border:1px solid var(--a);padding:6px 14px;border-radius:6px;display:inline-block;margin:4px 6px 4px 0}
+button,input,select{font:inherit;color:inherit}button{background:transparent;border:2px solid var(--a);color:var(--a);border-radius:8px;padding:6px 14px;cursor:pointer;font-weight:700;transition:.15s}button:hover,button.on{background:var(--a);color:var(--bg);transform:translateY(-2px)}
+input[type=number],select{padding:7px;border-radius:8px;border:2px solid var(--line);background:var(--bg)}input[type=number]{width:110px}input[type=range]{accent-color:var(--b);flex:1;min-width:120px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}.out{font:700 15px ui-monospace,monospace;color:var(--g);margin:6px 0}
+.big{width:100%;height:auto;min-height:240px;border:1px solid var(--line);border-radius:14px;margin:8px 0;background:linear-gradient(color-mix(in srgb,var(--a) 14%,transparent),transparent 75%)}
+.bar{display:flex;align-items:center;gap:8px;margin:3px 0;cursor:pointer;font:600 13px ui-monospace,monospace}.bar b{width:120px;font-weight:600}.bar i{display:block;height:20px;border-radius:4px;width:0;transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.chips span{display:inline-block;padding:3px 11px;border:1px solid var(--g);color:var(--g);border-radius:99px;margin:3px;font-size:14px}
+.ex{border:1px dashed var(--b);border-radius:12px;padding:10px 14px;margin:8px 0;background:color-mix(in srgb,var(--b) 8%,transparent)}
+details{margin:8px 0;border:1px solid var(--line);border-radius:10px;padding:8px 14px}summary{cursor:pointer;color:var(--a);font-weight:700}
+.q{border-top:1px dashed var(--line);padding:12px 0}.opt{display:block;width:100%;text-align:left;margin:6px 0;border-color:var(--line);color:var(--ink)}.opt.ok{background:var(--g);border-color:var(--g);color:#001}.opt.no{background:#e5484d;border-color:#e5484d;color:#fff}
+.fall{position:fixed;top:-30px;width:12px;height:12px;border-radius:3px;z-index:9;pointer-events:none;animation:fl 1.8s linear forwards}@keyframes fl{to{transform:translateY(110vh) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}section{opacity:1;transform:none}}
+</style></head><body><div id="prog"></div>
+<nav id="nv"></nav>
+<header id="s0"><p>CAMBRIDGE IGCSE PHYSICS · CHAPTER 5</p><h1>Den<span>sity</span></h1><p>Why is lead “heavier” than wood? Let’s find out, with experiments you can run.</p>
+<div class="hero"><div class="cube" style="background:#6b7280">lead<br>11</div><div class="cube" style="background:#a0693a;animation-delay:-1.2s">wood<br>0.8</div><div class="cube" style="background:#4aa3ff;animation-delay:-.6s">water<br>1.0</div></div></header>
+<main>
+<section id="s1"><h2><i>01 · THE IDEA</i>Same size, different “heaviness”</h2><p>In everyday talk, lead is “heavier” than wood. Scientists mean that a <b>certain volume</b> of lead has more mass than the same volume of wood. We compare using <b>density</b>: the mass per unit volume of a substance. Pick two materials and one volume, and the balance shows which has more mass.</p>
+<div class="row">A <select id="ba"></select> B <select id="bb"></select> Volume <input type="range" id="bv" min="1" max="10" value="5"><b id="bv2"></b></div><svg class="big" id="bs" viewBox="0 0 600 280"></svg><p class="out" id="bo"></p></section>
+<section id="s2"><h2><i>02 · DEFINITION</i>Density = mass ÷ volume</h2><span class="eq">ρ = m ÷ V</span><span class="eq">m = V × ρ</span><span class="eq">V = m ÷ ρ</span>
+<p>ρ (rho) is density, m is mass, V is volume. Lead’s density is 11 g/cm³: <b>1 cm³ of lead has a mass of 11 g</b>, and 5 cm³ has 55 g. Engineers use this to find the weight of a structure from its plans and plan strong foundations. Below, the dots show how much matter is packed into 1 cm³.</p>
+<div class="row">Material <select id="pm"></select> Volume <input type="range" id="pv" min="1" max="10" value="5"><b id="pv2"></b></div><svg class="big" id="ps" viewBox="0 0 600 260"></svg>
+<h3>The formula triangle: cover what you want</h3><div class="row"><button onclick="cv2('m')">cover m</button><button onclick="cv2('ρ')">cover ρ</button><button onclick="cv2('V')">cover V</button><span class="eq" id="tri">ρ × V</span></div></section>
+<section id="s3"><h2><i>03 · UNITS</i>g/cm³ and kg/m³</h2><p>The SI unit of density is kg/m³. Since 1 m³ = 1 000 000 cm³ and 1 kg = 1000 g, to convert <b>g/cm³ → kg/m³ multiply by 10³</b>. Water: 1.0 g/cm³ = 1.0 × 10³ kg/m³.</p>
+<div class="row">g/cm³ <input type="range" id="cr" min="0.1" max="20" step="0.1" value="2.7"><b id="cr2"></b></div><p class="out" id="co"></p></section>
+<section id="s4"><h2><i>04 · TABLE 5.1</i>Densities of common substances</h2><p>Tap a bar. The line marks water (1.0 g/cm³): shorter floats, longer sinks.</p><div id="tb"></div><p class="out" id="to">Tap a substance 👆</p><div class="chips"><b>Gases (kg/m³):</b><span>air 1.3</span><span>hydrogen 0.09</span><span>carbon dioxide 2.0</span></div></section>
+<section id="s5"><h2><i>05 · CALCULATIONS</i>Solve for any unknown</h2><div class="row">Find <select id="cu"><option>ρ</option><option>m</option><option>V</option></select> ρ <input type="number" id="cp" value="9" step="any"> g/cm³ m <input type="number" id="cm" value="63" step="any"> g V <input type="number" id="cvv" value="5" step="any"> cm³</div><p class="out" id="cres"></p>
+<div class="ex"><b>Worked example (book):</b> density of copper = 9 g/cm³. Find (a) the mass of 5 cm³ and (b) the volume of 63 g.<details><summary>Show solution</summary>(a) m = V × ρ = 5 × 9 = <b>45 g</b><br>(b) V = m ÷ ρ = 63 ÷ 9 = <b>7 cm³</b></details></div>
+<div class="ex"><b>Real example:</b> a room 10 m × 5.0 m × 2.0 m holds 100 m³ of air (ρ = 1.3 kg/m³).<details><summary>Show solution</summary>m = V × ρ = 100 × 1.3 = <b>130 kg</b>: as heavy as two adults!</details></div></section>
+<section id="s6"><h2><i>06 · MEASURING DENSITY</i>Four experiments</h2><div class="row" id="mt"></div>
+<div id="m1"><p><b>Regular solid</b> (block): find <b>mass</b> on a balance; find <b>volume</b> from ruler measurements (l × b × h). Then ρ = m ÷ V.</p></div>
+<div id="m2"><p><b>Irregular solid</b> (pebble, glass stopper): mass on a balance; volume by <b>displacement</b>: V = (2nd reading) − (1st reading) of a measuring cylinder. Drop the solid in:</p><div class="row">Solid <select id="st"></select><button onclick="drp()">⬇ Drop it in</button></div><svg class="big" id="ms" viewBox="0 0 600 280"></svg><p class="out" id="mo"></p></div>
+<div id="m3"><p><b>Liquid:</b> (1) weigh an empty beaker. (2) Pour in a known volume from a burette or measuring cylinder. (3) Weigh beaker + liquid. (4) Subtract to get the liquid’s mass, then ρ = m ÷ V.</p></div>
+<div id="m4"><p><b>Air:</b> (1) weigh a 500 cm³ flask full of air. (2) Pump the air out with a vacuum pump and weigh again; the difference is the air’s mass. (3) Fill the flask with water and pour it into a measuring cylinder to find the volume. ρ = m ÷ V.</p></div></section>
+<section id="s7"><h2><i>07 · FLOATING &amp; SINKING</i>An object sinks in a liquid of lower density than its own</h2><p>Otherwise it floats, partly or wholly submerged. Glass (2.5 g/cm³) sinks in water but <b>floats in mercury</b>. An iron nail sinks but an iron ship floats: its <b>average density</b> (hollow hull full of air) is less than water’s. Try the Dead Sea too!</p>
+<div class="row">Liquid <select id="fl"></select> Object <select id="fo"></select></div><svg class="big" id="fs" viewBox="0 0 600 290"></svg><p class="out" id="fx"></p></section>
+<section id="s8"><h2><i>08 · DENSITY TOWER</i>Layers of liquids</h2><p>Paraffin (0.80), water (1.0) and mercury (13.6) stack in layers because they don’t mix and the densest sits at the bottom. Drop objects in: each stops at the layer that is denser than it.</p><div class="row" id="tw0"></div><svg class="big" id="tw" viewBox="0 0 600 290"></svg></section>
+<section id="s9"><h2><i>09 · CHECK YOURSELF</i>Questions &amp; answers</h2><p>Questions 1–6 come from the chapter, plus extra practice. Tap an option, or type a number and press Check.</p><p class="out" id="sc"></p><div id="qz"></div></section>
+<section id="s10"><h2><i>10 · INTERVIEW PREP</i>Explain it in plain words</h2>
+<details><summary>What is density?</summary>Mass per unit volume: ρ = m ÷ V. It tells you how much matter is packed into a given space, e.g. 1 cm³ of lead has 11 g, 1 cm³ of water only 1 g.</details>
+<details><summary>Why does ice float on water?</summary>Ice has density 0.92 g/cm³, lower than water’s 1.0 g/cm³, so it floats with most of it submerged.</details>
+<details><summary>Why does an iron nail sink but a steel ship float?</summary>Compare <b>average density</b>. A nail is solid iron (7.9 g/cm³). A ship’s hollow hull is mostly air, so total mass ÷ total volume is below water’s density.</details>
+<details><summary>How do you find the density of a pebble?</summary>Weigh it (mass). Put it in a measuring cylinder of water and find the volume from the rise in water level (or collect the overflow from a displacement can). Then ρ = m ÷ V.</details>
+<details><summary>Convert 2.7 g/cm³ to kg/m³</summary>Multiply by 10³: 2.7 × 10³ = 2700 kg/m³ (aluminium).</details>
+<details><summary>Is “heavier” the same as “denser”?</summary>No. A huge block of wood can be heavier than a small lead ball, but lead is denser: more mass in every cm³.</details>
+<div class="chips"><span>ρ = m ÷ V</span><span>g/cm³ × 10³ = kg/m³</span><span>denser than liquid → sinks</span><span>V by displacement</span></div></section>
+</main>
+<script>
+const $=i=>document.getElementById(i),R=Math,FN=[],vis=e=>{const r=e.getBoundingClientRect();return r.bottom>-50&&r.top<innerHeight+50};
+const MT={'lead':[11,'#6b7280'],'aluminium':[2.7,'#aab4c3'],'copper':[8.9,'#c2703d'],'iron':[7.9,'#4b5563'],'gold':[19.3,'#e6b422'],'glass':[2.5,'#8fd3e8'],'wood (teak)':[.8,'#a0693a'],'ice':[.92,'#cdeeff'],'polythene':[.9,'#e8e4d8']};
+const LQ={'pure water':[1,'#4aa3ff'],'Dead Sea water':[1.24,'#2d86d6'],'paraffin':[.8,'#f5e6a3'],'petrol':[.8,'#e9c46a'],'mercury':[13.6,'#b8bcc6']};
+const OB={...MT,'iron ship (hollow hull)':[.5,'#2f4f6f'],'human body':[1.05,'#e0ac86'],'cork':[.25,'#c9a26b']};
+const sel=(id,o,v)=>{$(id).innerHTML=Object.keys(o).map(k=>`<option ${k==v?'selected':''}>${k}</option>`).join('')},r1=x=>R.round(x*100)/100;
+const T=(x,y,s,z=15,c='currentColor',a='middle')=>`<text x="${x}" y="${y}" font-size="${z}" font-weight="700" text-anchor="${a}" fill="${c}">${s}</text>`;
+const AR=(a,b,c,d,col)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="${col}" stroke-width="4"/><polygon points="${c},${d} ${c-8},${d-(d>b?14:-14)} ${c+8},${d-(d>b?14:-14)}" fill="${col}"/>`;
+// 1 balance
+sel('ba',MT,'lead');sel('bb',MT,'wood (teak)');let ang=0;
+FN.push(dt=>{const e=$('bs');if(!vis(e))return;const V=+$('bv').value,a=MT[$('ba').value],b=MT[$('bb').value],ma=a[0]*V,mb=b[0]*V;$('bv2').textContent=V+' cm³';
+ang+=(R.max(-18,R.min(18,(mb-ma)*.5))-ang)*R.min(1,dt*4);const c=R.cos(ang/57.3),s=R.sin(ang/57.3),sz=20+V*3,P=(x,y,m,mt,n)=>`<line x1="${x}" y1="${y}" x2="${x-50}" y2="${y+70}" stroke="#888" stroke-width="2"/><line x1="${x}" y1="${y}" x2="${x+50}" y2="${y+70}" stroke="#888" stroke-width="2"/><rect x="${x-60}" y="${y+70}" width="120" height="8" rx="4" fill="#999"/><rect x="${x-sz/2}" y="${y+70-sz}" width="${sz}" height="${sz}" rx="3" fill="${mt[1]}" stroke="#0006" stroke-width="2"/>`+T(x,y+102,n+': '+r1(m)+' g');
+e.innerHTML=`<polygon points="300,60 270,250 330,250" fill="#777"/><rect x="230" y="250" width="140" height="10" rx="4" fill="#555"/><line x1="${300-200*c}" y1="${60-200*s}" x2="${300+200*c}" y2="${60+200*s}" stroke="#c9a66b" stroke-width="10" stroke-linecap="round"/><circle cx="300" cy="60" r="9" fill="#e8590c"/>`+P(300-200*c,60-200*s,ma,a,$('ba').value)+P(300+200*c,60+200*s,mb,b,$('bb').value);
+$('bo').textContent=`Same volume (${V} cm³): ${$('ba').value} = ${r1(ma)} g, ${$('bb').value} = ${r1(mb)} g → the denser material is “heavier”.`});
+// 2 particles
+sel('pm',MT,'lead');const PD=Array.from({length:130},(_,i)=>[(i*37%101)/101,(i*61%103)/103]);
+FN.push((dt,t)=>{const e=$('ps');if(!vis(e))return;const m=MT[$('pm').value],n=R.max(1,R.round(m[0]*5)),V=+$('pv').value;$('pv2').textContent=V+' cm³';let d='';for(let i=0;i<n;i++)d+=`<circle cx="${50+PD[i][0]*200+R.sin(t*4+i)*2.5}" cy="${30+PD[i][1]*200+R.cos(t*3+i)*2.5}" r="5" fill="${m[1]}" stroke="#0006"/>`;
+let k='';for(let i=0;i<V;i++)k+=`<rect x="${300+i*26}" y="140" width="22" height="22" rx="3" fill="${m[1]}" stroke="#0006"/>`;
+e.innerHTML=`<rect x="40" y="20" width="220" height="220" fill="none" stroke="var(--a)" stroke-width="3" stroke-dasharray="8"/>`+d+T(150,254,'1 cm³ box',13,'var(--mut)')+T(300,50,$('pm').value+': ρ = '+m[0]+' g/cm³',20,'var(--b)','start')+T(300,84,'1 cm³ has a mass of '+m[0]+' g',16,'currentColor','start')+k+T(300,190,V+' cm³ → m = ρ × V = '+r1(m[0]*V)+' g',18,'var(--g)','start')});
+window.cv2=x=>{$('tri').textContent=x=='m'?'m = ρ × V':x=='ρ'?'ρ = m ÷ V':'V = m ÷ ρ'};
+// 3 convert
+$('cr').oninput=()=>{const v=+$('cr').value;$('cr2').textContent=v+' g/cm³';$('co').textContent=`${v} g/cm³ × 10³ = ${R.round(v*1000)} kg/m³`};$('cr').oninput();
+// 4 table
+const TB=[['aluminium',2.7],['copper',8.9],['iron',7.9],['gold',19.3],['glass',2.5],['wood (teak)',.8],['ice',.92],['polythene',.9],['paraffin',.8],['petrol',.8],['pure water',1],['mercury',13.6]];
+$('tb').innerHTML=TB.map(([n,d],i)=>`<div class="bar" onclick="tp('${n}',${d})"><b>${n}</b><i data-w="${d/19.3*100}" style="background:${d<1?'#4ff0b0':d==1?'#4aa3ff':'#ffb43b'}"></i><span>${d}</span></div>`).join('');
+window.tp=(n,d)=>$('to').textContent=`${n}: ${d} g/cm³ = ${d*1000} kg/m³ → ${d<1?'less dense than water: FLOATS':d==1?'same as water':'denser than water: SINKS'}`;
+// 5 calc
+function cc(){const u=$('cu').value,p=+$('cp').value,m=+$('cm').value,v=+$('cvv').value;$('cres').textContent=u=='ρ'?`ρ = m ÷ V = ${m} ÷ ${v} = ${r1(m/v)} g/cm³ = ${R.round(m/v*1000)} kg/m³`:u=='m'?`m = V × ρ = ${v} × ${p} = ${r1(v*p)} g`:`V = m ÷ ρ = ${m} ÷ ${p} = ${r1(m/p)} cm³`}
+['cu','cp','cm','cvv'].forEach(i=>$(i).oninput=cc);cc();
+// 6 measuring
+const MS=[['Regular solid','m1'],['Irregular solid','m2'],['Liquid','m3'],['Air','m4']],SD={'pebble':[65,25,'#8d8f94'],'glass stopper':[50,20,'#8fd3e8'],'golf ball':[33,30,'#f4f4f4']};
+$('mt').innerHTML=MS.map(([n,i],k)=>`<button id="b${i}" onclick="mtab('${i}')">${n}</button>`).join('');window.mtab=i=>MS.forEach(([n,j])=>{$(j).style.display=i==j?'':'none';$('b'+j).classList.toggle('on',i==j)});mtab('m2');
+sel('st',SD,'pebble');let DR={t:0};window.drp=()=>DR.t=.001;$('st').onchange=()=>DR.t=0;
+FN.push((dt)=>{const e=$('ms');if(!vis(e))return;if(DR.t>0&&DR.t<3)DR.t+=dt;const s=SD[$('st').value],tt=DR.t,V=s[1],lv=50+V*R.max(0,R.min(1,(tt-.8)/.7)),y=tt>0?15+175*R.min(1,tt/.8)**2:15,Y=v=>250-v*2.1;
+let g='';for(let v=0;v<=100;v+=10)g+=`<line x1="220" y1="${Y(v)}" x2="236" y2="${Y(v)}" stroke="#888"/>`+T(212,Y(v)+4,v,11,'var(--mut)','end');
+e.innerHTML=`<rect x="220" y="${Y(lv)}" width="100" height="${250-Y(lv)}" fill="rgba(60,150,240,.5)"/><rect x="220" y="30" width="100" height="220" fill="none" stroke="currentColor" stroke-width="3"/>${g}<ellipse cx="270" cy="${R.min(y,225)}" rx="${14+V/3}" ry="${11+V/4}" fill="${s[2]}" stroke="#0007" stroke-width="2"/>`+T(360,70,'1st reading: 50 cm³',16,'var(--mut)','start')+(tt>1.5?T(360,100,'2nd reading: '+(50+V)+' cm³',16,'var(--b)','start')+T(360,134,'V = '+(50+V)+' − 50 = '+V+' cm³',17,'var(--g)','start')+T(360,170,'m = '+s[0]+' g (balance)',16,'currentColor','start')+T(360,206,'ρ = '+s[0]+' ÷ '+V+' = '+r1(s[0]/V)+' g/cm³',18,'var(--a)','start'):T(360,100,'Press “Drop it in”',15,'var(--mut)','start'));$('mo').textContent=tt>1.5?`${$('st').value}: ρ = ${r1(s[0]/V)} g/cm³`:''});
+// 7 float
+sel('fl',LQ,'pure water');sel('fo',OB,'ice');let FS={t:0};$('fl').onchange=$('fo').onchange=()=>FS.t=0;
+FN.push(dt=>{const e=$('fs');if(!vis(e))return;FS.t+=dt;const lq=LQ[$('fl').value],o=OB[$('fo').value],f=o[0]/lq[0],fl=f<1,tg=fl?100+64*f-64:226,y=10+(tg-10)*(1-R.exp(-FS.t*2.2))+(fl?R.cos(FS.t*7)*8*R.exp(-FS.t*1.5):0),W=40+o[0]*6;
+e.innerHTML=`<rect x="150" y="100" width="300" height="160" fill="${lq[1]}" opacity=".55"/><rect x="150" y="40" width="300" height="220" fill="none" stroke="currentColor" stroke-width="4"/><rect x="268" y="${y}" width="64" height="64" rx="6" fill="${o[1]}" stroke="#0007" stroke-width="2"/>`+(FS.t>1.2?AR(350,y+32,350,y+32+W,'#e5484d')+AR(375,y+32+(fl?W:R.min(W,40)),375,y+32+(fl?0:R.min(W,40))-(fl?W:40),'#0a9a6c'):'')+T(40,60,'weight ↓ red',13,'#e5484d','start')+T(40,80,'upthrust ↑ green',13,'#0a9a6c','start')+T(300,282,`${$('fo').value} (${o[0]}) in ${$('fl').value} (${lq[0]}) → ${fl?'FLOATS, '+R.round(f*100)+'% submerged':'SINKS'}`,15,fl?'var(--g)':'#e5484d');
+$('fx').textContent=fl?`${o[0]} < ${lq[0]}: less dense than the liquid → floats.`:`${o[0]} > ${lq[0]}: denser than the liquid → sinks.`});
+// 8 tower
+const TL=[['paraffin',.8,'#f5e6a3',40],['pure water',1,'#4aa3ff',110],['mercury',13.6,'#b8bcc6',180]],TW={};
+const TO={'cork':.25,'ice':.92,'polythene':.9,'glass':2.5,'iron':7.9,'gold':19.3};
+$('tw0').innerHTML=Object.keys(TO).map(n=>`<button onclick="tdrop('${n}')">${n} (${TO[n]})</button>`).join('');
+window.tdrop=n=>{const d=TO[n],i=TL.findIndex(l=>l[1]>d),r=14,tg=i<0?250-r:TL[i][3]+2*r*(d/TL[i][1])-r;TW[n]={y:20,tg,c:OB[n]?OB[n][1]:'#999'}};
+FN.push(dt=>{const e=$('tw');if(!vis(e))return;let o='',k=0;for(const n in TW){const q=TW[n];q.y+=(q.tg-q.y)*R.min(1,dt*2.5);o+=`<circle cx="${180+k*20}" cy="${q.y}" r="14" fill="${q.c}" stroke="#0008" stroke-width="2" transform="translate(${k*38},0)"/>`+T(180+k*58,q.y+4,n[0].toUpperCase(),11,'#000');k++}
+e.innerHTML=TL.map(l=>`<rect x="120" y="${l[3]}" width="360" height="70" fill="${l[2]}" opacity=".7"/>`+T(500,l[3]+40,l[0]+' '+l[1],14,'currentColor','start')).join('')+`<rect x="120" y="40" width="360" height="210" fill="none" stroke="currentColor" stroke-width="4"/>`+o});
+// 9 quiz
+const Q=[['mc','Q1a. If the density of wood is 0.5 g/cm³, the mass of 10 cm³ is…',['0.5 g','5 g','50 g','10 g'],1,'m = V × ρ = 10 × 0.5 = 5 g.'],
+['n','Q1b. Mass 100 g, volume 10 cm³. Density?',10,'g/cm³','ρ = 100 ÷ 10 = 10 g/cm³.'],
+['n','Q1b (ii). Volume 3 m³ and mass 9 kg. Density?',3,'kg/m³','ρ = 9 ÷ 3 = 3 kg/m³.'],
+['n','Q1c. Gold has density 19 g/cm³. Volume of 95 g?',5,'cm³','V = m ÷ ρ = 95 ÷ 19 = 5 cm³.'],
+['n','Q2a. Steel: volume 12 cm³, mass 96 g. Density in g/cm³?',8,'g/cm³','96 ÷ 12 = 8 g/cm³.'],
+['n','Q2b. The same steel in kg/m³?',8000,'kg/m³','8 × 10³ = 8000 kg/m³.'],
+['n','Q3. Mass of 5 m³ of cement of density 3000 kg/m³?',15000,'kg','m = 5 × 3000 = 15 000 kg.'],
+['n','Q4. Mass of air in a 10 m × 5.0 m × 2.0 m room (ρ = 1.3 kg/m³)?',130,'kg','V = 100 m³; m = 100 × 1.3 = 130 kg.'],
+['n','Q5. A golf ball (mass 33 g) raises the water level by 30 cm³. Its density?',1.1,'g/cm³','ρ = 33 ÷ 30 = 1.1 g/cm³.'],
+['mc','Q6. Why does ice float on water?',['It is colder','Its density (0.92 g/cm³) is less than water’s','It is lighter than a drop of water','Air is trapped under it'],1,'Less dense than water, so it floats.'],
+['mc','A glass piece (2.5 g/cm³) is put in mercury (13.6 g/cm³). It…',['sinks','floats','dissolves','hovers at the bottom'],1,'Less dense than mercury, so it floats.'],
+['mc','An iron ship floats because…',['iron is light','its average density is less than water','water pushes harder on iron','it is painted'],1,'Hollow hull full of air → low average density.'],
+['mc','Convert 11 g/cm³ to kg/m³.',['11 kg/m³','110 kg/m³','11 000 kg/m³','0.011 kg/m³'],2,'Multiply by 10³.'],
+['mc','To find the volume of a pebble you…',['weigh it twice','measure the rise in water level in a measuring cylinder','measure its colour','shake it'],1,'Displacement: V = 2nd reading − 1st reading.']];
+let cur=Q,dn=[],S=0;const ans=q=>q[0]=='mc'?q[2][q[3]]:q[2]+' '+q[3];
+$('qz').innerHTML=Q.map((q,i)=>`<div class="q"><b>${q[1]}</b>`+(q[0]=='mc'?q[2].map((t,j)=>`<button class="opt" onclick="pk(${i},${j},this)">${t}</button>`).join(''):`<div class="row"><input type="number" step="any" id="n${i}" placeholder="Answer"> ${q[3]} <button onclick="ck(${i})">Check</button><button onclick="rs(${i},0)" style="border-color:var(--line);color:var(--ink)">Show answer</button></div>`)+`<div class="out" id="e${i}"></div></div>`).join('');
+const up=()=>$('sc').textContent=`Score: ${S} / ${Q.length} · answered ${dn.filter(Boolean).length}`;up();
+window.rs=(i,ok)=>{if(dn[i])return;dn[i]=1;if(ok){S++;for(let k=0;k<16;k++){const f=document.createElement('div');f.className='fall';f.style.left=R.random()*98+'vw';f.style.background=['#ffb43b','#4dd4ff','#4ff0b0'][k%3];f.style.animationDelay=R.random()*.5+'s';document.body.appendChild(f);setTimeout(()=>f.remove(),2500)}}$('e'+i).textContent=`${ok?'✅ Correct!':'❌ Not quite.'} Answer: ${ans(Q[i])}. ${Q[i][4]}`;up()};
+window.pk=(i,j,b)=>{if(dn[i])return;b.classList.add(j==Q[i][3]?'ok':'no');b.parentNode.querySelectorAll('.opt')[Q[i][3]].classList.add('ok');rs(i,j==Q[i][3])};
+window.ck=i=>{const x=parseFloat($('n'+i).value),a=Q[i][2];if(!isNaN(x))rs(i,R.abs(x-a)<=.02*R.abs(a))};
+// engine
+let lt=performance.now(),TM=0;(function lp(n){const dt=R.min(.05,(n-lt)/1000);lt=n;TM+=dt;FN.forEach(f=>{try{f(dt,TM)}catch(x){(window.__e=window.__e||[]).push(x.message)}});requestAnimationFrame(lp)})(lt);
+const secs=[...document.querySelectorAll('section')];$('nv').innerHTML=['Intro','Idea','Formula','Units','Table','Calc','Measure','Float','Tower','Quiz','Interview'].map((t,i)=>`<a href="#s${i}">${t}</a>`).join('');
+const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');if(e.target.id=='s4')document.querySelectorAll('.bar i').forEach(i=>i.style.width=i.dataset.w+'%');[...document.querySelectorAll('nav a')].forEach(a=>a.classList.toggle('on',a.getAttribute('href')=='#'+e.target.id))}}),{threshold:.1}):null;secs.forEach(s=>io?io.observe(s):s.classList.add('in'));if(!io)document.querySelectorAll('.bar i').forEach(i=>i.style.width=i.dataset.w+'%');
+addEventListener('scroll',()=>{const h=document.documentElement;$('prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100||0)+'%'},{passive:true});
+addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;const y=scrollY+120,k=secs.findIndex(s=>s.offsetTop>y);if(e.key=='ArrowRight'&&k>=0)secs[k].scrollIntoView();if(e.key=='ArrowLeft'){const p=secs.filter(s=>s.offsetTop<scrollY+100);if(p.length>1)p[p.length-2].scrollIntoView()}});
+</script></body></html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Crystallography For Beginners – Interactive E-Book</title>
+<style>
+:root{--bg:#f4f6f8;--panel:#fff;--ink:#14202b;--mute:#5d6b78;--line:#d8dfe6;--acc:#0a7c8c;--acc2:#e07a1f;--view:#e9eef2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e161d;--panel:#152029;--ink:#e6eef4;--mute:#92a3b1;--line:#263642;--acc:#38c3d6;--acc2:#f0993f;--view:#0b1218}}
+:root[data-theme="dark"]{--bg:#0e161d;--panel:#152029;--ink:#e6eef4;--mute:#92a3b1;--line:#263642;--acc:#38c3d6;--acc2:#f0993f;--view:#0b1218}
+html,body,#root{height:100%;margin:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 Georgia,'Iowan Old Style',serif}
+h1,h2,h3,button,.ui,th,input{font-family:'Trebuchet MS',system-ui,sans-serif}
+.app{display:flex;height:100%}.side{width:285px;flex:none;overflow:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+.side h2{font-size:13px;color:var(--mute);margin:18px 8px 6px;font-weight:600}.side h1{font-size:18px;margin:4px 8px 0}
+.nav{display:block;width:100%;text-align:left;border:0;background:none;color:var(--ink);padding:7px 10px;border-radius:6px;font-size:14px;cursor:pointer}
+.nav:hover{background:var(--bg)}.nav.on{background:var(--acc);color:#fff}
+.main{flex:1;overflow:auto;padding:22px;min-width:0}.menu{display:none}
+.page{max-width:1100px}.page h1{margin:0 0 10px;font-size:27px}.page h3{margin:20px 0 4px;font-size:17px}.page p,.page li{max-width:75ch}
+.page ul{padding-left:20px}.page a{color:var(--acc)}.tw{overflow-x:auto;margin:10px 0}table{border-collapse:collapse;font-size:14px}th,td{border:1px solid var(--line);padding:6px 10px;text-align:left}th{background:var(--panel)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px;margin:14px 0 22px}
+.view{position:relative;height:500px;background:var(--view);border:1px solid var(--line);border-radius:10px;overflow:hidden;touch-action:none;cursor:grab}
+.view canvas{display:block}.hint{position:absolute;left:10px;bottom:8px;font:12px system-ui;color:var(--mute);pointer-events:none}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:14px}.card h3{margin:0 0 6px;font-size:15px}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.btn{border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 11px;border-radius:6px;cursor:pointer;font-size:13px}
+.btn.on{background:var(--acc);border-color:var(--acc);color:#fff}.btn.pri{background:var(--acc2);border-color:var(--acc2);color:#fff}.btn:disabled{opacity:.4}
+.btn:focus-visible,.nav:focus-visible{outline:2px solid var(--acc2);outline-offset:2px}
+label.chk{display:flex;gap:8px;align-items:center;font:14px system-ui;margin:5px 0}.dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+.stat{display:flex;justify-content:space-between;gap:10px;font:14px system-ui;border-top:1px solid var(--line);padding:5px 0}.cap{margin-top:8px;font-size:14px;min-height:70px}
+input[type=number]{width:54px;padding:4px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:5px}
+.svgbox{background:var(--view);border:1px solid var(--line);border-radius:10px;padding:8px}.svgbox svg{width:100%;height:auto;max-height:380px;display:block}
+@media (max-width:860px){.grid{grid-template-columns:1fr}.view{height:380px}.menu{display:inline-block;margin-bottom:10px}
+.side{position:fixed;z-index:5;top:0;bottom:0;transform:translateX(-100%);transition:transform .2s}.side.open{transform:none;box-shadow:0 0 30px #0006}.main{padding:14px}}
+@media (prefers-reduced-motion:reduce){.side{transition:none}}
+</style></head><body><div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useEffect,useRef}=React;
+const PI=Math.PI,V=(x,y,z)=>new THREE.Vector3(x,y,z).normalize(),T3=(x,y,z)=>new THREE.Vector3(x,z,-y);
+const idx=n=>n<0?Math.abs(n)+'\u0304':String(n);
+const TOC=[{part:'Start',items:[['home','Crystallography For Beginners']]},
+{part:'Part 1',items:[['intro','Introduction'],['matter','Classification of matter'],['structure','What is crystal structure'],['params','Lattice parameters'],['systems','3D lattice and 7 crystal systems'],['poly','Polymorphism'],['symmetry','Symmetry Principles (Macro & Micro)'],['symlat','Symmetries in lattice'],['atoms','Atoms per unit cell'],['bravais','Bravais lattices'],['points','Lattice points'],['radius','Atomic Radius vs Lattice Parameters']]},
+{part:'Part 2',items:[['apf','Atomic Packing Factor (APF)'],['miller','Points / Directions / Planes'],['cryst','Crystallization (processes, mechanism, crystallizer, balances)'],['defects','Crystal Defects (dimensionality, point defects)'],['choc','Chocolate Industry Application'],['refs','References & Thanks']]}];
+
+function Viewer({onScene,tick,dist=4.2}){
+ const box=useRef();
+ useEffect(()=>{
+  const el=box.current,W=()=>el.clientWidth,H=()=>el.clientHeight;
+  const r=new THREE.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(devicePixelRatio,2));r.setSize(W(),H());el.appendChild(r.domElement);
+  const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(40,W()/H(),.1,100);
+  sc.add(new THREE.AmbientLight(0xffffff,.75));const dl=new THREE.DirectionalLight(0xffffff,.8);dl.position.set(3,5,4);sc.add(dl);
+  const init=()=>({th:.7,ph:1.15,rad:dist,tg:new THREE.Vector3()});let s=init();
+  const place=()=>{cam.position.set(s.tg.x+s.rad*Math.sin(s.ph)*Math.sin(s.th),s.tg.y+s.rad*Math.cos(s.ph),s.tg.z+s.rad*Math.sin(s.ph)*Math.cos(s.th));cam.lookAt(s.tg);cam.updateMatrix()};
+  let drag=null;const cv=r.domElement;
+  cv.onpointerdown=e=>{drag={x:e.clientX,y:e.clientY,pan:e.button===2||e.shiftKey};cv.setPointerCapture(e.pointerId)};
+  cv.onpointerup=()=>drag=null;
+  cv.onpointermove=e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag.x=e.clientX;drag.y=e.clientY;
+   if(drag.pan){const k=s.rad*.0018;s.tg.addScaledVector(new THREE.Vector3().setFromMatrixColumn(cam.matrix,0),-dx*k);s.tg.addScaledVector(new THREE.Vector3().setFromMatrixColumn(cam.matrix,1),dy*k)}
+   else{s.th-=dx*.01;s.ph=Math.min(3.04,Math.max(.1,s.ph-dy*.01))}};
+  cv.addEventListener('wheel',e=>{e.preventDefault();s.rad=Math.min(14,Math.max(1.4,s.rad*(1+e.deltaY*.001)))},{passive:false});
+  cv.oncontextmenu=e=>e.preventDefault();cv.ondblclick=()=>{s=init()};
+  const ro=new ResizeObserver(()=>{r.setSize(W(),H());cam.aspect=W()/H();cam.updateProjectionMatrix()});ro.observe(el);
+  let raf,last=performance.now();
+  const loop=t=>{raf=requestAnimationFrame(loop);const dt=Math.min(.05,(t-last)/1000);last=t;place();tick&&tick.current&&tick.current(dt);r.render(sc,cam)};
+  raf=requestAnimationFrame(loop);onScene(sc);
+  return()=>{cancelAnimationFrame(raf);ro.disconnect();r.dispose();el.removeChild(cv)};
+ },[]);
+ return <div className="view" ref={box}><div className="hint">Drag: rotate · Right/Shift-drag: pan · Wheel: zoom · Double-click: reset</div></div>;
+}
+const clearGroup=g=>{while(g.children.length){const c=g.children.pop();c.geometry&&c.geometry.dispose()}};
+const cyl=(p,q,col,r=.014)=>{const d=q.clone().sub(p),m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),8),new THREE.MeshBasicMaterial({color:col}));m.position.copy(p).addScaledVector(d,.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return m};
+const arrow=(p,q,col)=>{const g=new THREE.Group();g.add(cyl(p,q,col,.022));const c=new THREE.Mesh(new THREE.ConeGeometry(.06,.16,12),new THREE.MeshBasicMaterial({color:col}));c.position.copy(q);c.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),q.clone().sub(p).normalize());g.add(c);return g};
+const ball=(p,r,col,op=1)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(r,20,14),new THREE.MeshStandardMaterial({color:col,roughness:.35,transparent:op<1,opacity:op}));m.position.copy(p);return m};
+const lines=(prs,col)=>new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(prs.flat()),new THREE.LineBasicMaterial({color:col}));
+
+/* ===== 3D cells: lattice parameters / 7 systems / 14 Bravais / minimum symmetry ===== */
+const SYS={
+ cubic:{p:[1,1,1,90,90,90],c:['P','I','F'],e:'a = b = c, α = β = γ = 90°',ax:[[1,1,1],[1,1,-1],[1,-1,1],[-1,1,1]],m:'Four 3-fold axes along the body diagonals'},
+ tetragonal:{p:[1,1,1.5,90,90,90],c:['P','I'],e:'a = b ≠ c, α = β = γ = 90°',ax:[[0,0,1]],m:'Single 4-fold ∥ c'},
+ orthorhombic:{p:[1,1.3,1.7,90,90,90],c:['P','I','F','C'],e:'a ≠ b ≠ c, α = β = γ = 90°',ax:[[1,0,0],[0,1,0],[0,0,1]],m:'Three 2-fold axes ∥ a, b, c and 3 mirror planes ⊥ a, b, c'},
+ monoclinic:{p:[1,1.3,1.6,90,90,105],c:['P','C'],e:'a ≠ b ≠ c, α = β = 90°, γ ≠ 90°',ax:[[0,0,1]],m:'Single 2-fold along the unique axis (drawn ∥ c because γ ≠ 90° here)'},
+ hexagonal:{p:[1,1,1.6,90,90,120],c:['P'],e:'a = b ≠ c, α = β = 90°, γ = 120°',ax:[[0,0,1]],m:'Single 6-fold ∥ c'},
+ rhombohedral:{p:[1,1,1,75,75,75],c:['P'],e:'a = b = c, α = β = γ ≠ 90°',ax:[[1,1,1]],m:'3-fold ∥ c (body diagonal) or 3̄'},
+ triclinic:{p:[1,1.3,1.6,80,95,70],c:['P'],e:'a ≠ b ≠ c, α ≠ β ≠ γ',ax:[],m:'No minimum symmetry element (only 1 or 1̄)'}};
+const CF={P:'8 × ⅛ = 1',I:'8 × ⅛ + 1 = 2',F:'8 × ⅛ + 6 × ½ = 4',C:'8 × ⅛ + 2 × ½ = 2'};
+const eq=(x,y)=>Math.abs(x-y)<.01;
+function classify([a,b,c,al,be,ga]){const n90=[al,be,ga].filter(x=>eq(x,90)).length;
+ if(n90===3)return eq(a,b)&&eq(b,c)?'cubic':eq(a,b)?'tetragonal':'orthorhombic';
+ if(eq(al,90)&&eq(be,90)&&eq(ga,120)&&eq(a,b))return'hexagonal';
+ if(eq(a,b)&&eq(b,c)&&eq(al,be)&&eq(be,ga))return'rhombohedral';
+ return n90===2?'monoclinic':'triclinic'}
+function basis([a,b,c,al,be,ga]){const r=THREE.MathUtils.degToRad,ca=Math.cos(r(al)),cb=Math.cos(r(be)),cg=Math.cos(r(ga)),sg=Math.sin(r(ga));
+ const cx=c*cb,cy=c*(ca-cb*cg)/sg,cz=Math.sqrt(Math.max(.01,c*c-cx*cx-cy*cy));return[T3(a,0,0),T3(b*cg,b*sg,0),T3(cx,cy,cz)]}
+function Cell({m}){
+ const[sys,setSys]=useState('cubic'),[cent,setCent]=useState('P'),[pp,setPp]=useState([1,1,1,90,90,90]),[ax,setAx]=useState(true),[auto,setAuto]=useState(false),[sc,setSc]=useState(null);
+ const grp=useRef(new THREE.Group()),tick=useRef(),au=useRef(false);au.current=auto;
+ const P=m==='params'?pp:SYS[sys].p,cs=m==='params'?classify(pp):sys,c0=SYS[sys].c.includes(cent)?cent:'P';
+ useEffect(()=>{tick.current=dt=>{if(au.current)grp.current.rotation.y+=dt*.6}},[]);
+ useEffect(()=>{if(sc)sc.add(grp.current)},[sc]);
+ useEffect(()=>{
+  const g=grp.current;clearGroup(g);const B=basis(P),f=(x,y,z)=>new THREE.Vector3().addScaledVector(B[0],x-.5).addScaledVector(B[1],y-.5).addScaledVector(B[2],z-.5);
+  const K=[];for(const x of[0,1])for(const y of[0,1])for(const z of[0,1])K.push([x,y,z]);
+  const E=[];K.forEach((p,i)=>K.forEach((q,j)=>{if(j>i&&p.filter((v,n)=>v!==q[n]).length===1)E.push([f(...p),f(...q)])}));
+  g.add(lines(E,0x8899aa));
+  K.forEach(p=>g.add(ball(f(...p),.07,0x1c7ed6)));
+  const ex=c0==='I'?[[.5,.5,.5]]:c0==='F'?[[.5,.5,0],[.5,.5,1],[.5,0,.5],[.5,1,.5],[0,.5,.5],[1,.5,.5]]:c0==='C'?[[.5,.5,0],[.5,.5,1]]:[];
+  ex.forEach(p=>g.add(ball(f(...p),.075,c0==='I'?0x2f9e44:0xf08c00)));
+  if(ax){const o=f(0,0,0);[[0,0xe03131],[1,0x2f9e44],[2,0x1c7ed6]].forEach(([i,c])=>g.add(arrow(o,o.clone().add(B[i].clone().multiplyScalar(1.3)),c)))}
+  if(m==='symlat')SYS[sys].ax.forEach(d=>{const v=new THREE.Vector3().addScaledVector(B[0],d[0]).addScaledVector(B[1],d[1]).addScaledVector(B[2],d[2]).multiplyScalar(.62);g.add(cyl(v.clone().negate(),v,0xae3ec9,.018))});
+ },[P.join(),c0,ax,sc,sys,m]);
+ const names={params:['Lattice parameters','Move the six sliders: the lattice name updates by itself.'],systems:['The 7 crystal systems',''],bravais:['The 14 Bravais lattices','Choose a system, then a centring: P primitive, I body-centred, F face-centred, C base-centred.'],points:['Lattice points per cell','Count the points: corner = ⅛, face = ½, body = 1.'],symlat:['Minimum symmetry element','The purple line(s) are the minimum symmetry element(s) of the system.']};
+ const sl=(i,lab,mn,mx,st)=><label className="chk" key={i}><span style={{width:34}}>{lab}</span><input type="range" min={mn} max={mx} step={st} value={pp[i]} onChange={e=>{const v=[...pp];v[i]=+e.target.value;setPp(v)}}/><b>{pp[i]}</b></label>;
+ return <div className="grid"><Viewer onScene={setSc} tick={tick} dist={4.2}/><div className="card"><h3>{names[m][0]}</h3><p style={{margin:'0 0 8px',color:'var(--mute)'}}>{names[m][1]}</p>
+ {m==='params'?<>{sl(0,'a',.5,2,.05)}{sl(1,'b',.5,2,.05)}{sl(2,'c',.5,2,.05)}{sl(3,'α',60,130,1)}{sl(4,'β',60,130,1)}{sl(5,'γ',60,130,1)}<div className="row">{Object.keys(SYS).map(k=><button key={k} className="btn" onClick={()=>setPp(SYS[k].p)}>{k}</button>)}</div></>
+ :<><div className="row">{Object.keys(SYS).map(k=><button key={k} className={'btn'+(sys===k?' on':'')} onClick={()=>{setSys(k);setCent('P')}}>{k}</button>)}</div>
+ {(m==='bravais'||m==='points')&&<div className="row">{SYS[sys].c.map(k=><button key={k} className={'btn'+(c0===k?' on':'')} onClick={()=>setCent(k)}>{k}</button>)}</div>}</>}
+ <div className="stat"><span>System</span><b>{cs}</b></div><div className="stat"><span>Conditions</span><b>{SYS[cs].e}</b></div>
+ {(m==='bravais'||m==='points')&&<div className="stat"><span>Lattice points</span><b>{CF[c0]}</b></div>}
+ {m==='symlat'&&<div className="stat"><span>Minimum symmetry</span><b>{SYS[sys].m}</b></div>}
+ {m==='bravais'&&sys==='cubic'&&<p style={{fontSize:13,color:'var(--mute)'}}>No base-centred cubic: it would give a tetragonal cell, so it is not a unique lattice type.</p>}
+ <label className="chk"><input type="checkbox" checked={ax} onChange={e=>setAx(e.target.checked)}/>Axes a (red) b (green) c (blue)</label>
+ <label className="chk"><input type="checkbox" checked={auto} onChange={e=>setAuto(e.target.checked)}/>Auto-rotate</label></div></div>;
+}
+
+/* ===== Packing: atoms per cell, radius vs a, APF ===== */
+const HC=1.633;
+function cell(t){const A=[],E=[];
+ if(t==='hcp'){const hx=k=>[Math.cos(k*PI/3),Math.sin(k*PI/3)];
+  for(const z of[0,HC]){for(let k=0;k<6;k++){const[x,w]=hx(k),[x2,w2]=hx(k+1);A.push({k:'corner',p:[x,z-HC/2,w]});E.push([new THREE.Vector3(x,z-HC/2,w),new THREE.Vector3(x2,z-HC/2,w2)])}A.push({k:'face',p:[0,z-HC/2,0]})}
+  for(let k=0;k<6;k++){const[x,w]=hx(k);E.push([new THREE.Vector3(x,-HC/2,w),new THREE.Vector3(x,HC/2,w)])}
+  for(let k=0;k<3;k++){const a=PI/6+k*2*PI/3;A.push({k:'body',p:[Math.cos(a)/Math.sqrt(3),0,Math.sin(a)/Math.sqrt(3)]})}
+ }else{const C=[];for(const x of[-.5,.5])for(const y of[-.5,.5])for(const z of[-.5,.5])C.push([x,y,z]);
+  C.forEach(p=>A.push({k:'corner',p}));C.forEach((p,i)=>C.forEach((q,j)=>{if(j>i&&p.filter((v,n)=>v!==q[n]).length===1)E.push([new THREE.Vector3(...p),new THREE.Vector3(...q)])}));
+  if(t==='bcc')A.push({k:'body',p:[0,0,0]});
+  if(t==='fcc')[[.5,0,0],[-.5,0,0],[0,.5,0],[0,-.5,0],[0,0,.5],[0,0,-.5]].forEach(p=>A.push({k:'face',p}))}
+ return{A,E}}
+const LAT={sc:{n:'Simple cubic (SC)',N:1,f:'8 × ⅛ = 1',cn:6,r:.5,rel:'a = 2r (atoms touch along the edge)',V:1},
+ bcc:{n:'Body-centred cubic (BCC)',N:2,f:'8 × ⅛ + 1 = 2',cn:8,r:Math.sqrt(3)/4,rel:'a√3 = 4r (touch along the body diagonal)',V:1},
+ fcc:{n:'Face-centred cubic (FCC)',N:4,f:'8 × ⅛ + 6 × ½ = 4',cn:12,r:Math.SQRT2/4,rel:'a√2 = 4r (touch along the face diagonal)',V:1},
+ hcp:{n:'Hexagonal close-packed (HCP)',N:6,f:'12 × ⅙ + 2 × ½ + 3 = 6',cn:12,r:.5,rel:'a = 2r, ideal c/a = 1.633',V:3*Math.sqrt(3)/2*HC}};
+const COL={corner:0x1c7ed6,face:0xf08c00,body:0x2f9e44};
+function Packing(){
+ const[t,setT]=useState('fcc'),[show,setShow]=useState({corner:true,face:true,body:true}),[size,setSize]=useState(.7),[ed,setEd]=useState(true),[sc,setSc]=useState(null),grp=useRef(new THREE.Group());
+ useEffect(()=>{if(sc)sc.add(grp.current)},[sc]);
+ useEffect(()=>{const g=grp.current;clearGroup(g);const{A,E}=cell(t),R=LAT[t].r*size;
+  A.forEach(a=>{if(show[a.k]){const b=ball(new THREE.Vector3(...a.p),1,COL[a.k]);b.scale.setScalar(R);g.add(b)}});
+  if(ed)g.add(lines(E,0x8899aa))},[t,show,size,ed,sc]);
+ const L=LAT[t],apf=L.N*4/3*PI*Math.pow(L.r,3)/L.V;
+ return <div className="grid"><Viewer onScene={setSc} dist={4.6}/><div className="card"><h3>Structure</h3><div className="row">{Object.keys(LAT).map(k=><button key={k} className={'btn'+(t===k?' on':'')} onClick={()=>setT(k)}>{k.toUpperCase()}</button>)}</div>
+ {[['corner','Corner atoms'],['face',t==='hcp'?'Basal-centre atoms':'Face-centred atoms'],['body',t==='hcp'?'Mid-layer atoms':'Body-centred atom']].map(([k,n])=><label className="chk" key={k}><input type="checkbox" checked={show[k]} onChange={e=>setShow({...show,[k]:e.target.checked})}/><span className="dot" style={{background:'#'+COL[k].toString(16).padStart(6,'0')}}/>{n}</label>)}
+ <label className="chk"><input type="checkbox" checked={ed} onChange={e=>setEd(e.target.checked)}/>Cell edges</label>
+ <label className="chk">Atom size <input type="range" min=".2" max="1" step=".05" value={size} onChange={e=>setSize(+e.target.value)}/></label>
+ <div className="stat"><span>{L.n}</span></div><div className="stat"><span>Atoms per cell</span><b>{L.f}</b></div><div className="stat"><span>Radius vs a</span><b>{L.rel}</b></div><div className="stat"><span>Coordination no.</span><b>{L.cn}</b></div>
+ <div className="stat"><span>APF = N·(4/3)πr³ / V<sub>cell</sub></span><b>{(apf*100).toFixed(1)}%</b></div><p style={{fontSize:13,color:'var(--mute)'}}>Set atom size to 1 for touching spheres.</p></div></div>;
+}
+
+/* ===== Symmetry operations (macro + micro) ===== */
+const SYM={
+ r2:{g:'Rotation',n:'2-fold',k:'rot',ax:[1,0,1],a:PI,o:2},r3:{g:'Rotation',n:'3-fold',k:'rot',ax:[1,1,1],a:2*PI/3,o:3},
+ r4:{g:'Rotation',n:'4-fold',k:'rot',ax:[0,1,0],a:PI/2,o:4},r6:{g:'Rotation',n:'6-fold',k:'rot',ax:[0,1,0],a:PI/3,o:6},
+ m:{g:'Reflection',n:'Mirror ⊥ axis',k:'mir',ax:[1,0,0],o:2},mD:{g:'Reflection',n:'Diagonal mirror',k:'mir',ax:[1,0,1],o:2},
+ i:{g:'Inversion',n:'Centre i',k:'inv',o:2},
+ b4:{g:'Improper',n:'4̄',k:'ri',ax:[0,1,0],a:PI/2,o:4},b3:{g:'Improper',n:'3̄',k:'ri',ax:[1,1,1],a:2*PI/3,o:6},b6:{g:'Improper',n:'6̄',k:'ri',ax:[0,1,0],a:PI/3,o:6},
+ s:{g:'Micro',n:'Screw axis 2₁',k:'sc',ax:[0,1,0],a:PI,tr:.5,o:3},gl:{g:'Micro',n:'Glide plane',k:'gl',ax:[1,0,0],tr:[0,0,.5],o:3}};
+const TXT={rot:'A rotation turns the motif by 360°/n about the axis; an n-fold axis gives n identical positions per turn. Handedness is kept.',
+ mir:'The operation is reflection and the element is the mirror plane: the right half equals the left half, only the direction is reversed.',
+ inv:'The inversion centre flips the sign of every coordinate: (1, 1, 1) becomes (−1, −1, −1).',
+ ri:'An improper axis is a rotation by 360°/n followed by inversion. (2̄ is the same as a mirror plane.)',
+ sc:'A screw axis is a rotation plus a translation along the axis (here 180° plus ½ of the unit translation).',
+ gl:'A glide plane is a reflection plus a translation of half the unit translation parallel to the plane.'};
+function MX(o,t){const R=a=>new THREE.Matrix4().makeRotationAxis(V(...o.ax),a),S=s=>new THREE.Matrix4().makeScale(s,s,s),TR=v=>new THREE.Matrix4().makeTranslation(...v);
+ if(o.k==='rot')return R(o.a*t);if(o.k==='inv')return S(1-2*t);
+ if(o.k==='mir'||o.k==='gl'){const n=V(...o.ax),k=-2*t,M=new THREE.Matrix4().set(1+k*n.x*n.x,k*n.x*n.y,k*n.x*n.z,0,k*n.y*n.x,1+k*n.y*n.y,k*n.y*n.z,0,k*n.z*n.x,k*n.z*n.y,1+k*n.z*n.z,0,0,0,0,1);
+  return o.k==='gl'?M.premultiply(TR(o.tr.map(x=>x*t))):M}
+ if(o.k==='ri')return t<.5?R(o.a*2*t):S(1-2*(2*t-1)).multiply(R(o.a));
+ return R(o.a*t).premultiply(TR(V(...o.ax).multiplyScalar(o.tr*t).toArray()))}
+const MP=[[.28,.1,.06,0xe03131,.09],[.28,.3,.06,0x2f9e44,.06],[.1,.1,.32,0xf08c00,.045]];
+function motif(op){const g=new THREE.Group();MP.forEach(p=>g.add(ball(new THREE.Vector3(p[0],p[1],p[2]),p[4],p[3],op)));
+ g.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(MP.map(p=>new THREE.Vector3(p[0],p[1],p[2]))),new THREE.LineBasicMaterial({color:0x888888})));return g}
+function Symmetry(){
+ const[key,setKey]=useState('m'),[step,setStep]=useState(0),[sc,setSc]=useState(null),R=useRef({t:0,play:false,gh:[],link:null,el:new THREE.Group()}),tick=useRef();
+ const o=SYM[key];R.current.st={o,step};
+ useEffect(()=>{if(!sc)return;const r=R.current;
+  sc.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1,1,1)),new THREE.LineBasicMaterial({color:0x8899aa})),motif(1),r.el);
+  for(let i=0;i<5;i++){const g=motif(.5);g.matrixAutoUpdate=false;g.visible=false;r.gh.push(g);sc.add(g)}
+  r.link=new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(Array(6).fill(new THREE.Vector3())),new THREE.LineBasicMaterial({color:0xae3ec9}));r.link.frustumCulled=false;sc.add(r.link);
+  tick.current=dt=>{const{o,step}=r.st;if(r.play){r.t=Math.min(1,r.t+dt/2.2);if(r.t>=1)r.play=false}
+   const t=step>=3?1:r.t,F=MX(o,1),Mi=new THREE.Matrix4();
+   r.gh.forEach((g,i)=>{g.visible=step>=2&&(i===0||(step>=3&&i<o.o-1));if(i===0)g.matrix.copy(MX(o,t));else{Mi.identity();for(let k=0;k<=i;k++)Mi.premultiply(F);g.matrix.copy(Mi)}g.matrixWorldNeedsUpdate=true});
+   const pos=r.link.geometry.attributes.position;MP.slice(0,3).forEach((p,j)=>{const a=new THREE.Vector3(p[0],p[1],p[2]),b=a.clone().applyMatrix4(r.gh[0].matrix);pos.setXYZ(2*j,a.x,a.y,a.z);pos.setXYZ(2*j+1,b.x,b.y,b.z)});pos.needsUpdate=true;r.link.visible=step===2||(step>=3&&false)}},[sc]);
+ useEffect(()=>{const r=R.current;if(!sc)return;clearGroup(r.el);if(step<1)return;const pm=0xae3ec9;
+  if(['rot','ri','sc'].includes(o.k))r.el.add(cyl(V(...o.ax).multiplyScalar(-1.1),V(...o.ax).multiplyScalar(1.1),pm,.02));
+  if(o.k==='mir'||o.k==='gl'){const m=new THREE.Mesh(new THREE.PlaneGeometry(1.7,1.7),new THREE.MeshBasicMaterial({color:pm,transparent:true,opacity:.3,side:2}));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),V(...o.ax));r.el.add(m)}
+  if(o.k==='inv'||o.k==='ri')r.el.add(ball(new THREE.Vector3(),.05,pm))},[sc,key,step]);
+ const go=n=>{const r=R.current;setStep(n);r.t=n>=3?1:0;r.play=n===2};
+ const pick=k=>{setKey(k);go(0)};
+ const hand=MX(o,1).determinant()<0?'opposite handedness (mirror twin)':'same handedness (a direct copy)';
+ const cap=['Step 1/4: the solid motif (red, green, orange) sits in the unit cell. It has no symmetry of its own, so every image is easy to follow.',
+  'Step 2/4: the symmetry element is drawn (purple) through the cell centre.',
+  'Step 3/4: the ghost copy moves to its image position. Purple lines join each atom to its image.',
+  'Step 4/4: all images of the group. The image has '+hand+'.'];
+ const groups=[...new Set(Object.values(SYM).map(x=>x.g))];
+ return <div className="grid"><Viewer onScene={setSc} tick={tick} dist={3.6}/><div className="card">
+ {groups.map(gr=><div key={gr}><h3>{gr}</h3><div className="row">{Object.keys(SYM).filter(k=>SYM[k].g===gr).map(k=><button key={k} className={'btn'+(key===k?' on':'')} onClick={()=>pick(k)}>{SYM[k].n}</button>)}</div></div>)}
+ <div className="row"><button className="btn" disabled={step===0} onClick={()=>go(step-1)}>Back</button><button className="btn pri" disabled={step===3} onClick={()=>go(step+1)}>{step===1?'Apply operation':'Next step'}</button><button className="btn" disabled={step<2} onClick={()=>go(2)}>Replay</button><button className="btn" onClick={()=>go(0)}>Reset</button></div>
+ <div className="cap"><b>{o.g}: {o.n}.</b> {TXT[o.k]}<br/>{cap[step]}</div></div></div>;
+}
+
+/* ===== Miller indices: planes (h k l) and directions [u v w] ===== */
+function planePoly(h,k,l){
+ const C=[];for(const x of[0,1])for(const y of[0,1])for(const z of[0,1])C.push([x,y,z]);
+ for(const d of[1,(h+k+l)/2,0]){const pts=[],F=p=>h*p[0]+k*p[1]+l*p[2]-d,add=p=>{if(!pts.some(q=>q.distanceTo(p)<1e-6))pts.push(p)};
+  C.forEach((p,i)=>C.forEach((q,j)=>{if(j>i&&p.filter((v,n)=>v!==q[n]).length===1){const a=F(p),b=F(q);if(Math.abs(a)<1e-9)add(new THREE.Vector3(...p));if(Math.abs(b)<1e-9)add(new THREE.Vector3(...q));if(a*b<0){const t=a/(a-b);add(new THREE.Vector3(p[0]+t*(q[0]-p[0]),p[1]+t*(q[1]-p[1]),p[2]+t*(q[2]-p[2])))}}}));
+  if(pts.length>=3){const n=new THREE.Vector3(h,k,l).normalize(),u=Math.abs(n.x)<.9?new THREE.Vector3(1,0,0).cross(n).normalize():new THREE.Vector3(0,1,0).cross(n).normalize(),w=n.clone().cross(u),c=pts.reduce((s,p)=>s.add(p),new THREE.Vector3()).divideScalar(pts.length);
+   pts.sort((p,q)=>Math.atan2(p.clone().sub(c).dot(w),p.clone().sub(c).dot(u))-Math.atan2(q.clone().sub(c).dot(w),q.clone().sub(c).dot(u)));return{pts,d}}}
+ return null}
+const family=(a)=>{const S=new Set();[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]].forEach(p=>{for(const s of[1,-1])for(const t of[1,-1])for(const u of[1,-1])S.add([a[p[0]]*s,a[p[1]]*t,a[p[2]]*u].map(x=>x||0).join(','))});return S.size};
+function Miller(){
+ const[mode,setMode]=useState('plane'),[hkl,setHkl]=useState([1,1,1]),[uvw,setUvw]=useState([1,1,1]),[sc,setSc]=useState(null),g=useRef(new THREE.Group());
+ useEffect(()=>{if(sc)sc.add(g.current)},[sc]);
+ const T=p=>new THREE.Vector3(p.x-.5,p.z-.5,-(p.y-.5)),poly=mode==='plane'&&hkl.some(x=>x)?planePoly(...hkl):null;
+ useEffect(()=>{const G=g.current;clearGroup(G);
+  const C=[];for(const x of[0,1])for(const y of[0,1])for(const z of[0,1])C.push(new THREE.Vector3(x,y,z));
+  const E=[];C.forEach((p,i)=>C.forEach((q,j)=>{if(j>i&&[p.x!==q.x,p.y!==q.y,p.z!==q.z].filter(Boolean).length===1)E.push([T(p),T(q)])}));G.add(lines(E,0x8899aa));
+  const o=T(new THREE.Vector3(0,0,0));[[1,0,0,0xe03131],[0,1,0,0x2f9e44],[0,0,1,0x1c7ed6]].forEach(([x,y,z,c])=>G.add(arrow(o,T(new THREE.Vector3(x*1.35,y*1.35,z*1.35)),c)));G.add(ball(o,.05,0x222222));
+  if(poly){const P=poly.pts.map(T),geo=new THREE.BufferGeometry().setFromPoints(P.flatMap((p,i)=>i>0&&i<P.length-1?[P[0],p,P[i+1]]:[]));geo.computeVertexNormals();
+   G.add(new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:0xae3ec9,transparent:true,opacity:.45,side:2})));G.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(P),new THREE.LineBasicMaterial({color:0x7b1fa2})));
+   hkl.forEach((v,i)=>{if(v){const q=[0,0,0];q[i]=poly.d/v;G.add(ball(T(new THREE.Vector3(...q)),.05,0xf08c00))}})}
+  if(mode==='dir'&&uvw.some(x=>x)){const mx=Math.max(...uvw.map(Math.abs)),s=uvw.map(x=>x<0?1:0),e=uvw.map((x,i)=>s[i]+x/mx);G.add(arrow(T(new THREE.Vector3(...s)),T(new THREE.Vector3(...e)),0xf08c00))}
+ },[mode,hkl,uvw,sc]);
+ const inp=(v,set)=>v.map((x,i)=><input key={i} type="number" min="-4" max="4" value={x} onChange={e=>{const n=[...v];n[i]=Math.round(+e.target.value);set(n)}}/>);
+ const pre=[[1,0,0],[1,1,0],[1,1,1],[2,1,0],[2,2,1],[-1,1,1],[0,0,1]];
+ return <div className="grid"><Viewer onScene={setSc} dist={4}/><div className="card"><div className="row"><button className={'btn'+(mode==='plane'?' on':'')} onClick={()=>setMode('plane')}>Plane (h k l)</button><button className={'btn'+(mode==='dir'?' on':'')} onClick={()=>setMode('dir')}>Direction [u v w]</button></div>
+ <div className="row">{mode==='plane'?inp(hkl,setHkl):inp(uvw,setUvw)}</div><div className="row">{pre.map((p,i)=><button key={i} className="btn" onClick={()=>mode==='plane'?setHkl(p):setUvw(p)}>{p.map(idx).join(' ')}</button>)}</div>
+ {mode==='plane'?(hkl.some(x=>x)?<>
+  <div className="stat"><span>Intercepts</span><b>{hkl.map(x=>x?'1/'+idx(x):'∞').join(', ')}</b></div><div className="stat"><span>Reciprocals</span><b>{hkl.map(idx).join(' ')}</b></div>
+  <div className="stat"><span>Plane</span><b>({hkl.map(idx).join(' ')})</b></div><div className="stat"><span>Cubic family {'{'+hkl.map(idx).join(' ')+'}'}</span><b>{family(hkl)} planes</b></div>
+  {!poly&&<p>This plane does not cut the unit cell.</p>}</>:<p>Enter at least one non-zero index.</p>)
+ :(uvw.some(x=>x)?<><div className="stat"><span>Direction</span><b>[{uvw.map(idx).join(' ')}]</b></div><div className="stat"><span>Cubic family {'<'+uvw.map(idx).join(' ')+'>'}</span><b>{family(uvw)} directions</b></div></>:<p>Enter at least one non-zero index.</p>)}
+ <p style={{fontSize:13,color:'var(--mute)'}}>The plane is drawn at the position where its intercepts are 1/h, 1/k, 1/l (orange dots). Negative indices are shown with a bar.</p></div></div>;
+}
+
+/* ===== 2D widgets ===== */
+function Dots(){
+ const[m,setM]=useState('crystal');const pts=[];let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
+ if(m==='crystal')for(let i=0;i<14;i++)for(let j=0;j<9;j++)pts.push([20+i*22,20+j*22]);
+ if(m==='poly')[[0,0,0],[1,0,25],[0,1,50],[1,1,70]].forEach(([gx,gy,an])=>{const a=an*PI/180;for(let i=-14;i<14;i++)for(let j=-14;j<14;j++){const x=i*22*Math.cos(a)-j*22*Math.sin(a)+gx*154+77,y=i*22*Math.sin(a)+j*22*Math.cos(a)+gy*100+50;if(Math.floor(x/154)===gx&&Math.floor(y/100)===gy&&x>6&&x<302&&y>6&&y<194)pts.push([x,y])}});
+ if(m==='amorph')for(let n=0;n<110;n++)pts.push([10+rnd()*290,10+rnd()*180]);
+ return <div><div className="row">{[['crystal','Single crystal'],['poly','Polycrystal'],['amorph','Amorphous']].map(([k,n])=><button key={k} className={'btn'+(m===k?' on':'')} onClick={()=>setM(k)}>{n}</button>)}</div>
+ <div className="svgbox"><svg viewBox="0 0 310 200">{pts.map((p,i)=><circle key={i} cx={p[0]} cy={p[1]} r="5" fill="#1c7ed6"/>)}{m==='poly'&&<path d="M154 0V200M0 100H308" stroke="#e03131" strokeDasharray="4" fill="none"/>}</svg></div>
+ <p style={{fontSize:13,color:'var(--mute)'}}>{m==='crystal'?'Long-range order: one lattice through the whole piece.':m==='poly'?'Many grains, each ordered inside, separated by grain boundaries (red).':'Short-range order only: motifs are random.'}</p></div>}
+function Struct(){
+ const[lat,setLat]=useState(true),[mot,setMot]=useState(false);
+ return <div><div className="row"><label className="chk"><input type="checkbox" checked={lat} onChange={e=>setLat(e.target.checked)}/>Lattice (empty box)</label><label className="chk"><input type="checkbox" checked={mot} onChange={e=>setMot(e.target.checked)}/>Motif (chocolate)</label></div>
+ <div className="svgbox"><svg viewBox="0 0 310 200"><rect x="10" y="10" width="290" height="180" rx="8" fill="none" stroke="#8899aa" strokeWidth="2"/>{[0,1,2,3,4].map(i=>[0,1,2,3].map(j=><g key={i+'-'+j}>{mot&&<circle cx={40+i*57} cy={40+j*40} r="15" fill="#6d4c41"/>}{lat&&<circle cx={40+i*57} cy={40+j*40} r="4" fill="#e03131"/>}</g>))}</svg></div>
+ <p style={{fontSize:13,color:'var(--mute)'}}>{mot&&lat?'Crystal structure = Motif + Lattice: the box is full.':mot?'Motifs without the lattice.':lat?'Empty sites: each lattice point is where a motif goes.':'Nothing shown.'}</p></div>}
+function Supersat(){
+ const[g,setG]=useState(40),st=g<30?'Unsaturated solution':g===30?'Saturated solution':'Supersaturated solution';
+ return <div className="card" style={{maxWidth:520}}><h3>NaCl in 100 ml water at 80 °C (dissolves up to 30 g)</h3><label className="chk">NaCl added <input type="range" min="0" max="50" value={g} onChange={e=>setG(+e.target.value)}/><b>{g} g</b></label>
+ <div className="stat"><span>State</span><b>{st}</b></div><div className="stat"><span>Dissolved</span><b>{Math.min(g,30)} g</b></div><div className="stat"><span>Precipitates / crystallises</span><b>{Math.max(0,g-30)} g</b></div></div>}
+function Balance(){
+ const[F,setF]=useState(10000),[v,setV]=useState(3),[xf,setXf]=useState(30),[xl,setXl]=useState(20);
+ const V0=F*v/100,C=Math.max(0,(F*xf/100-xl/100*(F-V0))/(1-xl/100)),L=F-V0-C,n=(lab,val,set,mn,mx)=><label className="chk"><span style={{width:150}}>{lab}</span><input type="number" min={mn} max={mx} value={val} onChange={e=>set(+e.target.value)} style={{width:80}}/></label>;
+ return <div className="card" style={{maxWidth:520}}><h3>Crystallizer balance calculator (anhydrous crystals)</h3>{n('Feed F (kg)',F,setF,1,1e7)}{n('Water evaporated (% of F)',v,setV,0,50)}{n('Solute in feed (wt %)',xf,setXf,1,99)}{n('Solute in mother liquor (wt %)',xl,setXl,0,98)}
+ <div className="stat"><span>Water vapour V</span><b>{V0.toFixed(0)} kg</b></div><div className="stat"><span>Crystals C (solute balance)</span><b>{C.toFixed(0)} kg</b></div><div className="stat"><span>Mother liquor L = F − V − C</span><b>{L.toFixed(0)} kg</b></div>
+ <p style={{fontSize:13,color:'var(--mute)'}}>Your own numbers: edit the four inputs. Solute balance: F·x<sub>F</sub> = L·x<sub>L</sub> + C.</p></div>}
+function Defects(){
+ const[d,setD]=useState('none'),S=40,at=[];
+ for(let i=0;i<8;i++)for(let j=0;j<6;j++){const cat=(i+j)%2===0,tg=i===3&&j===2,nb=i===4&&j===2;let st='ion';
+  if(d==='vacancy'&&tg||d==='frenkel'&&tg||d==='schottky'&&(tg||nb))st='gone';if(d==='subst'&&tg)st='sub';at.push({x:30+i*S,y:30+j*S,cat,st})}
+ const ex=d==='inter'?[[30+3.5*S,30+2.5*S]]:d==='frenkel'?[[30+4.5*S,30+2.5*S]]:[];
+ const T={none:'Perfect ionic crystal.',vacancy:'Vacancy: a missing atom from an atomic site; the atoms around it are displaced.',subst:'Substitutional impurity: a foreign atom replaces a parent atom.',inter:'Interstitial impurity: a foreign atom sits in a void of the crystal.',frenkel:'Frenkel defect (ionic crystals): an ion moves from its regular site to an interstitial site.',schottky:'Schottky defect (ionic crystals): a pair of anion and cation vacancies.'};
+ return <div><div className="row">{[['none','Perfect'],['vacancy','Vacancy'],['subst','Substitutional'],['inter','Interstitial'],['frenkel','Frenkel'],['schottky','Schottky']].map(([k,n])=><button key={k} className={'btn'+(d===k?' on':'')} onClick={()=>setD(k)}>{n}</button>)}</div>
+ <div className="svgbox"><svg viewBox="0 0 340 260">{at.map((a,i)=>a.st==='gone'?<circle key={i} cx={a.x} cy={a.y} r="14" fill="none" stroke="#8899aa" strokeDasharray="3"/>:<circle key={i} cx={a.x} cy={a.y} r={a.st==='sub'?10:a.cat?12:16} fill={a.st==='sub'?'#ae3ec9':a.cat?'#1c7ed6':'#f08c00'}/>)}{ex.map((p,i)=><circle key={'e'+i} cx={p[0]} cy={p[1]} r="7" fill={d==='inter'?'#ae3ec9':'#1c7ed6'}/>)}</svg></div><p>{T[d]}</p></div>}
+const PH=[['I','γ',17.3,'Soft and crumbly. Noticeable blooming. Cooling melted chocolate rapidly (e.g. in the freezer).'],['II','α',23.3,'Soft and crumbly. Noticeable blooming. Cooling melted chocolate at 2 °C per minute.'],['III','β″',25.5,'Firm but without a good snap. Some blooming. Cooling at 5–10 °C.'],['IV','β′',27.3,'Firm but without a good snap. Some blooming. Letting melted chocolate cool at room temperature.'],['V','β',33.8,'Shiny, smooth texture, good snap, melts in the mouth. Formed by tempering slowly at room temperature.'],['VI','Super-β',36.3,'Hard, melts slowly in the mouth, some blooming. Cannot form from melted chocolate: only after solid tempered chocolate rests at least 4 months.']];
+function Choc(){const[i,setI]=useState(4),p=PH[i];
+ return <div className="card" style={{maxWidth:560}}><div className="row">{PH.map((x,k)=><button key={k} className={'btn'+(i===k?' on':'')} onClick={()=>setI(k)}>{x[0]}: {x[1]}</button>)}</div><h3>Phase {p[0]}: {p[1]}{i===4?'  (the best phase)':''}</h3><p style={{margin:'0 0 8px'}}>{p[3]}</p>
+ <div className="stat"><span>Melting point</span><b>{p[2]} °C</b></div><div style={{height:10,background:'var(--line)',borderRadius:5}}><div style={{height:10,width:((p[2]-10)/30*100)+'%',background:'var(--acc2)',borderRadius:5}}/></div></div>}
+
+/* ===== Content from the PowerPoint ===== */
+const W={cell:Cell,packing:Packing,sym:Symmetry,miller:Miller,dots:Dots,struct:Struct,supersat:Supersat,balance:Balance,defects:Defects,choc:Choc};
+const PAGES={
+home:{t:'Crystallography For Beginners',b:['By: Mahmoud Khaled','بِسْمِ اللَّـهِ الرَّحْمَـٰنِ الرَّحِيمِ','First, all thanks to Dr. Hassan Elshimy, who made me love Crystallography. And all thanks also to Dr. Ahmed M. Bayoumy, who gave me a deeper knowledge.',
+ 'These slides are for anyone who wants to start in Crystallography and does not know where to start. They cover the crystals, the crystallization process, the crystal systems and so on. I do not go into much detail, to keep it as simple as possible: these are just the fundamentals.',{h:'Part 1'},['Introduction · Classification of matter · Crystal structure · Lattice parameters · 3D lattice and the 7 crystal systems · Polymorphism · Principles of symmetry (macro and micro) · Symmetries in lattice structures · Atoms per unit cell · Bravais lattices · Lattice points per unit cell · Atomic radius vs lattice parameters'],{h:'Part 2'},['Atomic Packing Factor · Points, directions and planes · Crystallization (processes, mechanism, crystallizer, material and solute balance) · Crystal defects · Chocolate industry application · References']]},
+intro:{t:'Introduction',b:[{h:'Why do we study Crystallography?'},['Metallurgy: analysing crystal structures helps improve metal alloys and understand their behaviour.','Drug discovery: determining the structure of proteins and other biomolecules aids drug design.','Mineralogy: identifying and classifying minerals by their crystal structure.','Electronics: developing semiconductors and other electronic components.','And so many other applications.'],{h:'What is a crystal?'},'A solid material whose constituents (atoms, molecules or ions) are arranged in a highly ordered microscopic structure, forming a crystal lattice that extends in all directions.','For example, an ice cube is a crystalline solid: its water molecules are arranged in a specific order.']},
+matter:{t:'Classification of matter according to crystal structure',b:[{h:'Single crystal (monocrystal)'},['High periodicity in long-range order.','Sharp melting point: the solid becomes liquid within a very small temperature range (usually less than 5 °C), and the value is consistent and reproducible.','Anisotropy: properties depend on the direction of measurement (refractive index, birefringence, strength, hardness, electrical and thermal conductivity). For example, a crystal might conduct electricity better along one axis than another.','High strength and hardness; uniform properties; can be grown with extremely high purity.','Examples: diamonds, quartz, ruby and other gems.'],{h:'Polycrystal'},['Made up of many small single crystals called grains. Inside each grain the motifs (ions, atoms, molecules) are highly periodic; grains are separated by grain boundaries.','Isotropy: properties are often similar in all directions because of the random orientation of grains.','Lower strength and hardness than single crystals, because grain boundaries act as weak points.'],{h:'Amorphous (non-crystal)'},['Motifs in short-range order (random). No specific melting point.','No definite shape: can be moulded easily. Isotropic.','By ageing, it may convert to a crystal.','Examples: glass, rubber.'],{w:'dots'}]},
+structure:{t:'What is crystal structure?',b:['Crystal structure = Motif + Lattice.','The motif (also called basis) is the ion, atom or molecule that is repeated. The lattice is a collection of points called lattice points: each atom, molecule or ion (constituent particle) is represented by a single point, and the surroundings of each lattice point are identical.','Think of an empty box of chocolates. The empty sites are the lattice (each one is a lattice point); the chocolate is the motif. After placing the motifs the box is full: it is now a crystal structure (a delicious one).',{w:'struct'}]},
+params:{t:'Lattice parameters',b:['In a 3D lattice there are 6 parameters (3 vectors): the axes a, b and c, and the angles α (between b and c), β (between a and c) and γ (between a and b). The a axis may be replaced with b or c, and the same for b and c.','Why a, b, c and not x, y, z? In x, y, z coordinates the three angles must be 90°. In a, b, c coordinates the angles are not necessarily 90°, as several crystal systems show.',{w:'cell',m:'params'}]},
+systems:{t:'3D lattice and the seven crystal systems',b:['Choose a system on the right and rotate it. The relations between the axes and angles are shown in the panel.',{t:[['System','Axes','Angles'],['Cubic (isometric)','a = b = c','α = β = γ = 90°'],['Tetragonal','a = b ≠ c','α = β = γ = 90°'],['Orthorhombic','a ≠ b ≠ c','α = β = γ = 90°'],['Monoclinic','a ≠ b ≠ c','α = β = 90°, γ ≠ 90°'],['Hexagonal','a = b ≠ c','α = β = 90°, γ = 120°'],['Rhombohedral (trigonal)','a = b = c','α = β = γ ≠ 90°'],['Triclinic','a ≠ b ≠ c','α ≠ β ≠ γ']]},{w:'cell',m:'systems'},{l:[['Video: a trick to remember the 7 crystal systems','https://www.youtube.com/watch?v=Uf8YsqMsNkY']]}]},
+poly:{t:'Polymorphism',b:['Polymorphism is the phenomenon where a compound or element can crystallize into more than one crystal structure. Carbon has four forms with very different physical properties.',{t:[['','Diamond','Graphene','Graphite','Carbon black'],['Structure','Cubic','Hexagonal, layered sheets','Hexagonal','Amorphous'],['Look','Transparent','Often transparent','Grey, opaque, flaky solid','Black powder'],['Hardness','Extremely hard, the hardest known natural material','Very strong and stiff for its weight','Soft and slippery','Soft'],['Conduction','Non-conductor of electricity','Excellent conductor of heat and electricity','Good conductor of electricity and heat','Low electrical conductivity']]},{h:'Titanium dioxide polymorphs'},{t:[['Property','Anatase','Brookite','Rutile'],['Crystal system','Tetragonal','Orthorhombic','Tetragonal'],['Colour','Translucent to transparent, pale yellow or brown','Brown, reddish-brown or yellow','Reddish-brown, black or yellow'],['Refractive index','2.55','2.58–2.61','2.61–2.71'],['Dispersion','Moderate','Strong','Very strong'],['Optical activity','Optically active','Optically inactive','Optically inactive']]}]},
+symmetry:{t:'Principles of Symmetry (Macro & Micro)',b:['Symmetry is a property of an object that remains unchanged under certain transformations such as reflection, rotation or translation. Pick any operation below and step through it.',{w:'sym'},{h:'Macro symmetry operations'},['Reflection (mirror plane): the operation is called reflection, the element is the mirror. The right part of a heart equals the left part, only the direction differs.','Rotation axis: 2-, 3-, 4- and 6-fold.','Water molecule: 2 vertical reflection planes and one 2-fold axis. Ammonia: 3 vertical planes and one 3-fold axis.','Inversion centre i: flips the sign of the coordinates, (1, 1) becomes (−1, −1). Example: the benzene ring.','Improper axes: 2̄, 3̄, 4̄ and 6̄ (rotation followed by inversion).'],{h:'Micro symmetry operations'},['Screw axis: rotation plus translation along the axis.','Glide plane (reflection + translation): the travel distance must be half the unit translation, in a direction parallel to the glide plane.','Axial glide plane: the gliding component is parallel to a crystallographic axis (a-, b- or c-glide).','Diagonal glide plane: two translation steps, i.e. a translation by ½a + ½c.'],{l:[['Water video','https://www.youtube.com/watch?v=gM3SC_v22_g'],['Ammonia video','https://www.youtube.com/watch?v=gFSPtSikag4&t=2s'],['Crystal system flow chart','https://opengeology.org/Mineralogy/10-crystal-morphology-and-symmetry/']]}]},
+symlat:{t:'Symmetries in lattice structures',b:['If we see a crystal lattice we can identify it by its symmetries, specifically by its minimum symmetry element: the element that this lattice has and the others do not. (Like Ali, who is different from the others because of his blue jacket and white T-shirt.)',{t:[['System','Minimum symmetry element'],['Triclinic','None (only 1 or 1̄)'],['Monoclinic','Single 2-fold ∥ b'],['Orthorhombic','Three 2-fold axes ∥ a, b, c and 3 mirror planes ⊥ a, b, c'],['Tetragonal','Single 4-fold ∥ c'],['Hexagonal','Single 6-fold ∥ c'],['Rhombohedral','3-fold ∥ c or 3̄'],['Cubic','Four 3-fold axes along the body diagonals']]},{w:'cell',m:'symlat'}]},
+atoms:{t:'Number of atoms per unit cell',b:['All 7 systems have a primitive lattice (P). Non-primitive lattices are face-centred (F), body-centred (I) and base-centred (A, B or C). Not every system has all three: some violate the identical-environment requirement or the minimum symmetry element, and have an alternative.','Counting rule: an atom at a corner is shared by 8 cells (⅛), on a face by 2 cells (½), inside the cell it counts fully (1).',{w:'packing'}]},
+bravais:{t:'Bravais lattices',b:['The Bravais lattices are the 14 different three-dimensional configurations into which atoms can be arranged in crystals. Pick a system and centring below.','Why is there no base-centred cubic? Base centring would produce a new symmetry class, tetragonal, so base-centred cubic is not a unique lattice type. This is the identical-environment violation.',{w:'cell',m:'bravais'}]},
+points:{t:'Number of lattice points per unit cell',b:['Lattice points are counted like atoms: corner = ⅛, face = ½, body = 1. Select a lattice to see the count.',{w:'cell',m:'points'}]},
+radius:{t:'Atomic radius vs lattice parameters',b:['Looking at the 2D view of simple cubic (SC), the lattice parameter a equals two atomic radii: a = 2r. Select the other structures to see where the atoms touch.',{w:'packing'}]},
+apf:{t:'Atomic Packing Factor (APF)',b:['The APF quantifies how efficiently atoms are packed in a crystal structure: the ratio of the volume occupied by atoms to the total volume of the unit cell.','It is used to predict properties such as density, mechanical properties, electrical and thermal conductivity, and also in crystal structure analysis.',{w:'packing'}]},
+miller:{t:'Points, directions and planes in the unit cell',b:['Enter (h k l) to draw a plane, or [u v w] to draw a direction in the unit cell.',{w:'miller'},{h:'Directions [u v w]'},['Subtract the tail coordinates from the head coordinates, clear fractions, reduce to the smallest integers.','Example: A = [100], B = [111], C: (0,0,1) − (½,1,0) = (−½,−1,1) → ×2 → [1̄ 2̄ 2].','Parallel directions are the same direction. Direction family ⟨u v w⟩ is related to symmetry: for cubic, ⟨110⟩ has 12 directions.'],{h:'Planes (h k l)'},['1. Determine the intercepts. 2. Take the reciprocals. 3. If fractions result, multiply by the denominator of the smallest fraction.','Plane family {h k l} also depends on symmetry: {100} in cubic has 6 planes, in tetragonal 4, and {001} in tetragonal 2. In orthorhombic each of {100}, {010}, {001} has 2.','Naming: lattice coordinate 0,0,1 · direction [001] · direction family ⟨001⟩ · plane (001) · plane family {001}.'],{l:[['DoITPoMS plane drawing tool','https://www.doitpoms.ac.uk/tlplib/miller_indices/lattice_draw.php']]}]},
+cryst:{t:'Crystallization',b:['Crystallization is the formation of solid crystals from solution, from a melt, or by deposition directly from a gas phase.',{h:'Processes'},['Slow cooling crystallization: heat the solution so solubility rises, then cool it very slowly. Solubility drops, the salt precipitates and crystals form.','Evaporation at constant temperature: evaporate the water so the crystals precipitate. Most industries use this process.'],{h:'Mechanism: supersaturation, nucleation, crystal growth'},'Supersaturation: the solution contains more dissolved material than the solvent could normally dissolve. Example: water at 80 °C dissolves up to 30 g NaCl per 100 ml. 10 g gives an unsaturated solution, 30 g a saturated one, and 40 g a supersaturated one in which 10 g precipitate.',{w:'supersat'},['Ways to reach supersaturation: evaporate the solvent; cool the solution; add a substance that is more soluble in the solvent than the solid to be crystallized.','Solubility curves. Type I: increases with temperature, no hydrates. Type II: increases but the curve is very flat. Type III: increases fairly fast with “breaks” showing different hydrates. Type IV: unusual: solubility rises at a transition point while that of the hydrate decreases with temperature.','Nucleation: solute molecules gather into nanometre clusters; stable clusters form nuclei. This is where atoms arrange periodically to form the crystal structure.','Crystal growth: once nuclei form, nucleation stops and growth begins, layer by layer, as particles organise into the lattice.'],{h:'The crystallizer'},'A crystallizer is a vessel or stage in which a crystal grows from a liquid. Streams: feed F (the supersaturated solution), crystals C (hydrated or anhydrous), mother liquor L (residual liquid) and water vapour V (may or may not be present).',{h:'Material balance: F = L + C + V'},{w:'balance'},'Solute balance: the solute entering with the feed leaves with the crystals and the mother liquor. Examples in the deck use 10 000 kg of feed, once with no evaporation and once with 3 % of the feed lost as water vapour while cooling.']},
+defects:{t:'Crystal defects',b:['Classification by dimensionality:',{t:[['0D (point)','1D (line)','2D (surface / interface)','3D (volume)'],['Vacancy','Edge dislocation','External surface','Twins'],['Impurity','Screw dislocation','Grain boundary','Precipitate'],['Frenkel defect','','Twin boundary','Faulted region'],['Schottky defect','','Tilt boundary','Voids / cracks'],['','','Stacking faults','Thermal vibration']]},'We focus only on point defects: in non-ionic crystals vacancy and impurity (interstitial or substitutional); in ionic crystals Frenkel and Schottky.',{w:'defects'}]},
+choc:{t:'Chocolate industry application',b:['Cocoa butter is the primary ingredient of chocolate. It is made mostly of fat molecules, and how they are arranged determines the structure of chocolate: there are 6 phases (polymorphs).',{w:'choc'},'To choose the best phase we want a stable phase, a balance of hardness and snap, a beautiful shine, and smooth even melting in the mouth. The phase that has all of these is Phase V: β.',{l:[['The polymorphs of chocolate (Compound Interest)','https://www.compoundchem.com/2014/04/19/the-polymorphs-of-chocolate/']]}]},
+refs:{t:'References & thanks',b:['Askeland, Fulay, Wright. The Science and Engineering of Materials, 6th edition.','Marcos, C. (2022). Crystallography: Introduction to the Study of Minerals. Springer Nature.','Nassau, K. (1983). The physics and chemistry of color. Deer, Howie & Zussman (1992). Rock-forming minerals, vol. 5.',{l:[['OpenGeology: crystal morphology and symmetry','https://opengeology.org/Mineralogy/10-crystal-morphology-and-symmetry/'],['MSE Student: Bravais lattices','https://msestudent.com/what-are-bravais-lattices-definition-types-examples/'],['MSE Student: Miller indices','https://msestudent.com/miller-indices/'],['Wikipedia: Crystal polymorphism','https://en.wikipedia.org/wiki/Crystal_polymorphism'],['Chemistry World: Well-tempered chocolate','https://www.chemistryworld.com/features/well-tempered-chocolate/9200.article'],['Cocoterra: chocolate polymorphs','https://www.cocoterra.com/the-science-of-chocolate-6-types-of-chocolate-polymorphs/']]},
+ {h:'Thank you'},'I have tried to simplify this topic as much as possible. I did not go into many details because this explanation is directed to those who want to start studying crystallography. I hope you do not get Crystallophobia 😁','الحمد لله رب العالمين — دعواتكم لأبي بالرحمة و المغفرة','Contact: mahmoudkhaled1955@gmail.com']}};
+function Art({b}){return b.map((x,i)=>typeof x==='string'?<p key={i} dir="auto">{x}</p>:Array.isArray(x)?<ul key={i}>{x.map((s,j)=><li key={j} dir="auto">{s}</li>)}</ul>:x.h?<h3 key={i}>{x.h}</h3>
+ :x.t?<div className="tw" key={i}><table><tbody>{x.t.map((r,j)=><tr key={j}>{r.map((c,k)=>j?<td key={k}>{c}</td>:<th key={k}>{c}</th>)}</tr>)}</tbody></table></div>
+ :x.l?<p key={i}>{x.l.map(([n,u])=><span key={u}><a href={u} target="_blank" rel="noreferrer">{n}</a>{'  '}</span>)}</p>:x.w?React.createElement(W[x.w],{key:x.w+(x.m||''),m:x.m}):null)}
+function App(){
+ const[id,setId]=useState('home'),[open,setOpen]=useState(false),P=PAGES[id];
+ return <div className="app"><nav className={'side'+(open?' open':'')} aria-label="Contents"><h1>Crystallography for Beginners</h1>
+  {TOC.map(p=><div key={p.part}><h2>{p.part}</h2>{p.items.map(([k,n])=><button key={k} className={'nav'+(id===k?' on':'')} onClick={()=>{setId(k);setOpen(false);document.querySelector('.main').scrollTop=0}}>{n}</button>)}</div>)}</nav>
+  <main className="main"><button className="btn menu" onClick={()=>setOpen(!open)}>Contents</button><div className="page" key={id}><h1>{P.t}</h1><Art b={P.b}/></div></main></div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script></body></html>
