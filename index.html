@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mahmoud Khaled – Science Educator & Interactive Learning Developer</title>
+<meta name="description" content="Biophysics graduate who builds interactive e-books and educational games for physics and science. 16,000+ ResearchGate reads, a full YouTube course, and 4+ years preparing educational material.">
+<meta property="og:title" content="Mahmoud Khaled – Science Educator & Interactive Learning Developer"><meta property="og:description" content="Interactive e-books, educational games and clear science lessons."><meta property="og:image" content="img/galileo-base.png">
+<link rel="icon" href="img/avatar.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07122A;--panel:#0d1c3c;--panel2:#12254d;--text:#E6EEF8;--mut:#9fb2cc;--gold:#FFB21E;--gold2:#FFD166;--blue:#4FA3FF;--line:#22407a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:17px/1.65 Poppins,'Segoe UI',Arial,sans-serif}
+a{color:var(--gold);text-decoration:none}a:hover{text-decoration:underline}img{max-width:100%;display:block}
+.wrap{max-width:1140px;margin:0 auto;padding:0 22px}
+nav{position:sticky;top:0;z-index:20;background:rgba(7,18,42,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:22px;height:66px}nav .logo{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:18px}nav .logo img{width:38px;height:38px;border-radius:50%}
+nav .links{margin-left:auto;display:flex;gap:20px;align-items:center;flex-wrap:wrap}nav .links a{color:var(--text);font-size:15px;font-weight:500}
+.btn{display:inline-block;background:var(--gold);color:#101010!important;padding:11px 22px;border-radius:10px;font-weight:600;font-size:16px;border:0;cursor:pointer;text-decoration:none!important}.btn:hover{background:var(--gold2)}.btn.ghost{background:transparent;color:var(--text)!important;border:2px solid var(--line)}.btn.ghost:hover{border-color:var(--gold)}.btn.sm{padding:8px 16px;font-size:14px}
+.hero{padding:70px 0 40px;background:radial-gradient(900px 400px at 85% 0%,rgba(79,163,255,.22),transparent),radial-gradient(700px 400px at 0% 100%,rgba(255,178,30,.14),transparent)}
+.hero .wrap:first-child{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center}
+.hero h1{font-size:46px;line-height:1.15;margin:8px 0 14px}.hero h1 span{color:var(--gold)}.hero p.lead{font-size:20px;color:var(--mut);margin:0 0 26px}.tag{color:var(--blue);font-weight:600;letter-spacing:.08em;font-size:14px;text-transform:uppercase}
+.hero .pic{justify-self:center;width:290px;height:290px;border-radius:50%;border:6px solid var(--gold);box-shadow:0 0 60px rgba(255,178,30,.35)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:46px 0 0}.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 12px;text-align:center}.stat b{display:block;font-size:30px;color:var(--gold);line-height:1.1}.stat span{font-size:13.5px;color:var(--mut)}
+section{padding:64px 0}section h2{font-size:32px;margin:0 0 8px}section .sub{color:var(--mut);margin:0 0 30px;max-width:760px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}.card:hover{transform:translateY(-4px);border-color:var(--gold)}
+.card img.th{aspect-ratio:11/7;object-fit:cover;width:100%;background:#000}.card .body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}.card h3{margin:0;font-size:20px;line-height:1.3}.card p{margin:0;color:var(--mut);font-size:15.5px;line-height:1.55}
+.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{font-size:12.5px;background:var(--panel2);color:var(--gold2);padding:3px 10px;border-radius:99px}.actions{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;padding-top:8px}
+.alt{background:linear-gradient(180deg,#091735,#07122A)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:22px}.box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px}.box h3{margin:0 0 8px;font-size:22px}.box p{color:var(--mut);margin:6px 0 16px}.big{font-size:44px;font-weight:700;color:var(--gold);line-height:1}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.step{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}.step i{font-style:normal;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--gold);color:#101010;font-weight:700;margin-bottom:10px}.step h4{margin:0 0 4px;font-size:17px}.step p{margin:0;color:var(--mut);font-size:14.5px;line-height:1.5}
+.offer{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.offer div{background:var(--panel);border-left:4px solid var(--gold);border-radius:10px;padding:16px 18px}.offer b{display:block;margin-bottom:2px}.offer span{color:var(--mut);font-size:15px}
+.timeline .it{border-left:3px solid var(--line);padding:0 0 22px 20px;position:relative}.timeline .it:before{content:"";position:absolute;left:-8px;top:6px;width:13px;height:13px;border-radius:50%;background:var(--gold)}.timeline b{font-size:18px}.timeline small{color:var(--blue);display:block}.timeline p{margin:4px 0 0;color:var(--mut);font-size:15.5px}
+.skills{display:flex;gap:9px;flex-wrap:wrap}.skills span{background:var(--panel2);padding:6px 14px;border-radius:99px;font-size:14.5px}
+.contact{text-align:center}.contact .row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);text-align:center;font-size:14px}
+.modal{position:fixed;inset:0;background:rgba(2,6,16,.9);display:none;z-index:50;padding:3vh 3vw}.modal.on{display:flex;flex-direction:column;gap:10px}.modal .bar{display:flex;gap:12px;align-items:center;color:#fff}.modal .bar b{flex:1;font-size:18px}.modal iframe{flex:1;width:100%;border:0;border-radius:12px;background:#fff}
+@media(max-width:900px){.hero .wrap:first-child,.two{grid-template-columns:1fr}.hero .pic{width:200px;height:200px;order:-1}.grid,.steps,.offer{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:34px}nav .links{display:none}}
+</style></head><body>
+<nav><div class="wrap"><a class="logo" href="#top"><img src="img/avatar.png" alt="MT logo">Mahmoud Khaled</a>
+<div class="links"><a href="#books">E-Books</a><a href="#games">Games</a><a href="#teaching">Teaching</a><a href="#work">Work with me</a><a href="#about">About</a><a class="btn sm" href="Mahmoud_Khaled_CV.pdf">Download CV</a></div></div></nav>
+
+<header class="hero" id="top"><div class="wrap"><div>
+<div class="tag">Science educator · Interactive learning developer</div>
+<h1>I turn complex science into <span>clear, interactive lessons.</span></h1>
+<p class="lead">Biophysics graduate with 4+ years of preparing educational material. I build interactive e-books, educational games and step-by-step courses for physics and science students.</p>
+<a class="btn" href="#books">Explore my work</a> &nbsp; <a class="btn ghost" href="Mahmoud_Khaled_CV.pdf">Download CV</a></div>
+<img class="pic" src="img/avatar.png" alt="Mahmoud Teacher logo"></div>
+<div class="wrap"><div class="stats">
+<div class="stat"><b>16,000+</b><span>reads on ResearchGate</span></div><div class="stat"><b>4+ yrs</b><span>preparing educational material</span></div><div class="stat"><b>3</b><span>interactive e-books</span></div><div class="stat"><b>3</b><span>educational games (112 levels)</span></div><div class="stat"><b>1</b><span>full YouTube course</span></div></div></div></header>
+
+<section id="books"><div class="wrap"><h2>Interactive E-Books</h2><p class="sub">Open any book right here. They are real interactive lessons: step-by-step explanations, activities, examples and quizzes.</p>
+<div class="grid">
+<div class="card"><img class="th" src="img/force.jpg" alt="Force and Acceleration e-book preview"><div class="body"><h3>Force and Acceleration</h3><p>A 7-step guided lesson from “What is a force?” to Newton’s second law, with predict-then-check activities, worked examples, a practice generator, exam practice, a quiz and a cheat sheet.</p><div class="chips"><span class="chip">IGCSE Physics</span><span class="chip">Forces</span><span class="chip">Quiz</span></div><div class="actions"><button class="btn sm" data-book="books/force-and-acceleration.html" data-title="Force and Acceleration">Read it here</button><a class="btn ghost sm" href="books/force-and-acceleration.html" target="_blank" rel="noopener">Open full page</a></div></div></div>
+<div class="card"><img class="th" src="img/density.jpg" alt="Density e-book preview"><div class="body"><h3>Density</h3><p>The formula triangle, units, calculations, four ways to measure density, floating and sinking, and a density tower, with check-yourself questions and plain-words prompts.</p><div class="chips"><span class="chip">IGCSE Physics</span><span class="chip">Calculations</span><span class="chip">Experiments</span></div><div class="actions"><button class="btn sm" data-book="books/density.html" data-title="Density">Read it here</button><a class="btn ghost sm" href="books/density.html" target="_blank" rel="noopener">Open full page</a></div></div></div>
+<div class="card"><img class="th" src="img/crystal.jpg" alt="Crystallography e-book preview"><div class="body"><h3>Crystallography for Beginners</h3><p>An introduction to crystal structures with interactive 3D visuals, made for first-time learners.</p><div class="chips"><span class="chip">Materials science</span><span class="chip">3D visuals</span><span class="chip">Has a YouTube course</span></div><div class="actions"><button class="btn sm" data-book="books/crystallography.html" data-title="Crystallography for Beginners">Read it here</button><a class="btn ghost sm" href="books/crystallography.html" target="_blank" rel="noopener">Open full page</a></div></div></div>
+</div></div></section>
+
+<section id="games" class="alt"><div class="wrap"><h2>Educational Games</h2><p class="sub">Free 3D browser games where students walk around, experiment and solve puzzles. Every level starts with a short animated lesson and has step-by-step hints. No music, suitable for all ages.</p>
+<div class="grid">
+<div class="card"><img class="th" src="img/galileo-base.png" alt="Galileo Base cover"><div class="body"><h3>Galileo Base</h3><p>Forces and motion in 3D. 32 levels: launch rockets at any angle, crash-test cars, balance seesaws and explore orbits.</p><div class="chips"><span class="chip">Physics</span><span class="chip">IGCSE</span><span class="chip">32 levels</span></div><div class="actions"><a class="btn sm" href="https://mahmoud-teacher.itch.io/" target="_blank" rel="noopener">Play on itch.io</a></div></div></div>
+<div class="card"><img class="th" src="img/volt-valley.png" alt="Volt Valley cover"><div class="body"><h3>Volt Valley</h3><p>Electric circuits in 3D. 48 levels from Ohm’s law and parallel circuits to capacitors, coils, AC and filters.</p><div class="chips"><span class="chip">Electronics</span><span class="chip">Circuits</span><span class="chip">48 levels</span></div><div class="actions"><a class="btn sm" href="https://mahmoud-teacher.itch.io/" target="_blank" rel="noopener">Play on itch.io</a></div></div></div>
+<div class="card"><img class="th" src="img/logic-city.png" alt="Logic City cover"><div class="body"><h3>Logic City</h3><p>Digital electronics in 3D. 32 levels from binary numbers and logic gates to adders, flip-flops and counters.</p><div class="chips"><span class="chip">Digital electronics</span><span class="chip">Logic gates</span><span class="chip">32 levels</span></div><div class="actions"><a class="btn sm" href="https://mahmoud-teacher.itch.io/" target="_blank" rel="noopener">Play on itch.io</a></div></div></div>
+</div><p style="margin-top:22px;color:var(--mut);font-size:15px">I designed the lesson sequence, level goals and explanations for every game.</p></div></section>
+
+<section id="teaching"><div class="wrap"><h2>Teaching & Research</h2><p class="sub">Explaining science clearly, in video and in writing.</p>
+<div class="two"><div class="box"><h3>YouTube course: Crystallography for Beginners</h3><p>A full video course, planned, recorded and published by me, that explains crystal structures step by step for first-time learners. It has a matching interactive e-book (above).</p><a class="btn" href="https://youtube.com/playlist?list=PL9qH9KXnqSOli0iektzf9rzbSSmqKOo8m" target="_blank" rel="noopener">Watch the course</a></div>
+<div class="box"><div class="big">16,000+</div><h3>Reads on ResearchGate</h3><p>Educational resources that students and researchers read and download.</p><a class="btn" href="https://www.researchgate.net/profile/Mahmoud-Khaled-33" target="_blank" rel="noopener">View my ResearchGate</a></div></div></div></section>
+
+<section class="alt"><div class="wrap"><h2>How I design a lesson</h2><p class="sub">The same four ideas run through all my e-books and games.</p>
+<div class="steps"><div class="step"><i>1</i><h4>Start simple</h4><p>One small idea at a time, in plain words.</p></div><div class="step"><i>2</i><h4>Show it</h4><p>Diagrams, animations and 3D visuals, not only text.</p></div><div class="step"><i>3</i><h4>Let them try</h4><p>Predict, change a setting, see what happens.</p></div><div class="step"><i>4</i><h4>Check understanding</h4><p>Worked examples, quizzes, hints and cheat sheets.</p></div></div></div></section>
+
+<section id="work"><div class="wrap"><h2>Work with me</h2><p class="sub">Schools, academies and universities: I can prepare teaching material for your students, or teach and explain it myself.</p>
+<div class="offer"><div><b>Interactive e-books</b><span>Built around your curriculum: IGCSE / Edexcel physics and general science.</span></div><div><b>Slide decks and study notes</b><span>Clear presentations, worked examples and answer keys.</span></div><div><b>Educational games and simulations</b><span>Browser-based, nothing to install, easy to use in class.</span></div><div><b>Explainer courses</b><span>Step-by-step video lessons, like my YouTube course.</span></div></div></div></section>
+
+<section id="about" class="alt"><div class="wrap"><h2>About me</h2><div class="two"><div><p>I am a biophysics graduate from Ain Shams University. For more than four years I have been preparing educational material, starting while I was still a student. I love explaining difficult ideas in a simple way, and I am looking for a teaching or educational-content role where I can do that every day.</p>
+<h3 style="margin-top:26px">Skills</h3><div class="skills"><span>Lesson explanation</span><span>Worked examples</span><span>Quizzes and answer keys</span><span>Interactive e-books</span><span>Educational games</span><span>Presentations</span><span>PowerPoint</span><span>Excel · Power BI</span><span>MySQL</span><span>Interactive web content</span><span>Arabic (native)</span><span>English (very good)</span></div></div>
+<div class="timeline"><div class="it"><b>Educational Content Developer</b><small>2021 – Present · Independent</small><p>Slide decks, study notes, interactive e-books and educational games.</p></div><div class="it"><b>Intern Data Analyst, Digital Hub</b><small>Nov 2025 – Dec 2025</small><p>Data cleaning, validation and structuring.</p></div><div class="it"><b>Trainee, NRSRC</b><small>Aug 2023</small><p>Nuclear physics fundamentals and laboratory techniques.</p></div><div class="it"><b>B.S. Biophysics, Ain Shams University</b><small>2021 – 2025 · CGPA 3.435 / 4</small><p>Graduation project (Excellent): Dopamine detection using carbon quantum dots from banana peels.</p></div></div></div></div></section>
+
+<section class="contact" id="contact"><div class="wrap"><h2>Let’s talk</h2><p class="sub" style="margin:0 auto">Open to teaching and educational-content roles at schools, academies and universities.</p>
+<div class="row"><a class="btn" href="mailto:mahmoudkhaled1955@gmail.com">mahmoudkhaled1955@gmail.com</a><a class="btn ghost" href="tel:+201117931982">+20 111 793 1982</a><a class="btn ghost" href="https://www.linkedin.com/in/mahmoud-khaled-169a55264" target="_blank" rel="noopener">LinkedIn</a><a class="btn ghost" href="Mahmoud_Khaled_CV.pdf">Download CV</a></div>
+<p style="margin-top:18px;color:var(--mut)">El-Khanka, Qalyubiyya, Egypt</p></div></section>
+<footer>© Mahmoud Khaled · <a href="https://mahmoud-teacher.itch.io/" target="_blank" rel="noopener">Games on itch.io</a> · <a href="https://www.researchgate.net/profile/Mahmoud-Khaled-33" target="_blank" rel="noopener">ResearchGate</a> · <a href="https://youtube.com/playlist?list=PL9qH9KXnqSOli0iektzf9rzbSSmqKOo8m" target="_blank" rel="noopener">YouTube course</a> · <a href="https://www.linkedin.com/in/mahmoud-khaled-169a55264" target="_blank" rel="noopener">LinkedIn</a></footer>
+
+<div class="modal" id="modal"><div class="bar"><b id="mt"></b><a class="btn sm" id="mo" target="_blank" rel="noopener">Open full page</a><button class="btn ghost sm" id="mc">Close ✕</button></div><iframe id="mf" title="Interactive book" allowfullscreen></iframe></div>
+<script>
+const m=document.getElementById('modal'),f=document.getElementById('mf');
+document.querySelectorAll('[data-book]').forEach(b=>b.onclick=()=>{f.src=b.dataset.book;document.getElementById('mt').textContent=b.dataset.title;document.getElementById('mo').href=b.dataset.book;m.classList.add('on');document.body.style.overflow='hidden'});
+function close_(){m.classList.remove('on');f.src='about:blank';document.body.style.overflow=''}
+document.getElementById('mc').onclick=close_;addEventListener('keydown',e=>{if(e.key=='Escape')close_()});
+</script></body></html>
