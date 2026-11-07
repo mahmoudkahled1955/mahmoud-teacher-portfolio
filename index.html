@@ -23,7 +23,7 @@ nav .links{margin-left:auto;display:flex;gap:20px;align-items:center;flex-wrap:w
 section{padding:64px 0}section h2{font-size:32px;margin:0 0 8px}section .sub{color:var(--mut);margin:0 0 30px;max-width:760px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}.card:hover{transform:translateY(-4px);border-color:var(--gold)}
-.card img.th{aspect-ratio:11/7;object-fit:cover;width:100%;background:#000}.card .body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}.card h3{margin:0;font-size:20px;line-height:1.3}.card p{margin:0;color:var(--mut);font-size:15.5px;line-height:1.55}
+.card img.th{aspect-ratio:11/7;object-fit:cover;width:100%;background:#000}.card img.game{aspect-ratio:5/4}.vid{aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden;border:1px solid var(--line);display:grid;place-items:center;text-align:center}.vid iframe{width:100%;height:100%;border:0}.vid .ph{padding:20px;color:var(--mut)}.vid .ph b{display:block;font-size:54px;color:var(--gold);line-height:1}.demo{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;align-items:start}@media(max-width:900px){.demo{grid-template-columns:1fr}}.card .body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}.card h3{margin:0;font-size:20px;line-height:1.3}.card p{margin:0;color:var(--mut);font-size:15.5px;line-height:1.55}
 .chips{display:flex;gap:7px;flex-wrap:wrap}.chip{font-size:12.5px;background:var(--panel2);color:var(--gold2);padding:3px 10px;border-radius:99px}.actions{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;padding-top:8px}
 .alt{background:linear-gradient(180deg,#091735,#07122A)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:22px}.box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px}.box h3{margin:0 0 8px;font-size:22px}.box p{color:var(--mut);margin:6px 0 16px}.big{font-size:44px;font-weight:700;color:var(--gold);line-height:1}
@@ -37,7 +37,7 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);text-ali
 @media(max-width:900px){.hero .wrap:first-child,.two{grid-template-columns:1fr}.hero .pic{width:200px;height:200px;order:-1}.grid,.steps,.offer{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:34px}nav .links{display:none}}
 </style></head><body>
 <nav><div class="wrap"><a class="logo" href="#top"><img src="img/avatar.png" alt="MT logo">Mahmoud Khaled</a>
-<div class="links"><a href="#books">E-Books</a><a href="#games">Games</a><a href="#teaching">Teaching</a><a href="#work">Work with me</a><a href="#about">About</a><a class="btn sm" href="Mahmoud_Khaled_CV.pdf">Download CV</a></div></div></nav>
+<div class="links"><a href="#demo">Demo lesson</a><a href="#books">E-Books</a><a href="#games">Games</a><a href="#teaching">Teaching</a><a href="#work">Work with me</a><a href="#about">About</a><a class="btn sm" href="Mahmoud_Khaled_CV.pdf">Download CV</a></div></div></nav>
 
 <header class="hero" id="top"><div class="wrap"><div>
 <div class="tag">Science educator · Interactive learning developer</div>
@@ -47,6 +47,7 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);text-ali
 <img class="pic" src="img/avatar.png" alt="Mahmoud Teacher logo"></div>
 <div class="wrap"><div class="stats">
 <div class="stat"><b>16,000+</b><span>reads on ResearchGate</span></div><div class="stat"><b>4+ yrs</b><span>preparing educational material</span></div><div class="stat"><b>3</b><span>interactive e-books</span></div><div class="stat"><b>3</b><span>educational games (112 levels)</span></div><div class="stat"><b>1</b><span>full YouTube course</span></div></div></div></header>
+
 
 <section id="books"><div class="wrap"><h2>Interactive E-Books</h2><p class="sub">Open any book right here. They are real interactive lessons: step-by-step explanations, activities, examples and quizzes.</p>
 <div class="grid">
@@ -83,6 +84,9 @@ footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mut);text-ali
 
 <div class="modal" id="modal"><div class="bar"><b id="mt"></b><a class="btn sm" id="mo" target="_blank" rel="noopener">Open full page</a><button class="btn ghost sm" id="mc">Close ✕</button></div><iframe id="mf" title="Interactive book" allowfullscreen></iframe></div>
 <script>
+/* PASTE YOUR YOUTUBE VIDEO ID BETWEEN THE QUOTES (the 11 characters after v= in the video link) */
+const DEMO_VIDEO_ID='';
+if(DEMO_VIDEO_ID){document.getElementById('videoBox').innerHTML='<iframe src="https://www.youtube.com/embed/'+DEMO_VIDEO_ID+'" title="Demo lesson: Free Fall" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'}
 const m=document.getElementById('modal'),f=document.getElementById('mf');
 document.querySelectorAll('[data-book]').forEach(b=>b.onclick=()=>{f.src=b.dataset.book;document.getElementById('mt').textContent=b.dataset.title;document.getElementById('mo').href=b.dataset.book;m.classList.add('on');document.body.style.overflow='hidden'});
 function close_(){m.classList.remove('on');f.src='about:blank';document.body.style.overflow=''}
